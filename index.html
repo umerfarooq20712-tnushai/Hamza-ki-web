@@ -1,0 +1,871 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050b14">
+<title>SECURE_SHELL // v3.0</title>
+
+<style>
+:root {
+  --bg: #050b14;
+  --panel: #0a1422;
+  --panel2: #0e1b2d;
+  --cyan: #38d9ff;
+  --green: #53ffad;
+  --purple: #bd7bff;
+  --text: #d9f7ff;
+  --muted: #7b91a8;
+  --border: rgba(56,217,255,.24);
+  --danger: #ff617c;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at top, #10243a 0%, transparent 55%),
+    var(--bg);
+  color: var(--text);
+  font-family: "Courier New", monospace;
+  padding: 22px 14px 30px;
+}
+
+button, input, textarea { font: inherit; }
+
+button {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible, input:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+.scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  opacity: .10;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    #000 4px
+  );
+}
+
+.app {
+  max-width: 780px;
+  margin: 0 auto;
+  position: relative;
+}
+
+header { text-align: center; margin: 10px 0 26px; }
+
+.brand {
+  color: var(--cyan);
+  font-size: clamp(24px, 6vw, 43px);
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 0 0 18px #38d9ff65;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  margin-top: 10px;
+  line-height: 1.8;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--green);
+  border: 1px solid #53ffad40;
+  background: #53ffad0b;
+  border-radius: 30px;
+  padding: 7px 12px;
+  font-size: 10px;
+  margin-top: 15px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  50% { opacity: .35; }
+}
+
+.panel {
+  border: 1px solid var(--border);
+  background: linear-gradient(145deg, #0b1727ee, #060d18f5);
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 0 28px #38d9ff0a;
+  overflow: hidden;
+}
+
+.windowbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #ffffff12;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+
+.lights { display: flex; gap: 6px; }
+
+.light {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.red { background: #ff5f57; }
+.yellow { background: #febc2e; }
+.green { background: #28c840; }
+
+.window-label {
+  color: var(--muted);
+  font-size: 10px;
+  text-align: right;
+}
+
+.terminal-line {
+  font-size: 12px;
+  line-height: 1.9;
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+
+.success { color: var(--green); }
+.info { color: var(--muted); }
+.cyan { color: var(--cyan); }
+.purple { color: var(--purple); }
+
+.section-title {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--cyan);
+  margin: 22px 0 12px;
+}
+
+.field-label {
+  display: block;
+  color: #93aac0;
+  font-size: 11px;
+  margin: 15px 0 8px;
+}
+
+.input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #263e55;
+  background: #040a12;
+  border-radius: 9px;
+  padding: 6px 8px 6px 12px;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.input-wrap:focus-within {
+  border-color: var(--cyan);
+  box-shadow: 0 0 15px #38d9ff12;
+}
+
+.prompt { color: var(--green); font-weight: bold; }
+
+input {
+  min-width: 0;
+  width: 100%;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  outline: 0;
+  padding: 11px 0;
+  font-size: 14px;
+}
+
+input::placeholder { color: #50657a; }
+
+.mini-btn {
+  background: #122236;
+  border: 1px solid #263e55;
+  border-radius: 6px;
+  color: var(--cyan);
+  padding: 9px 10px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 15px;
+}
+
+.btn {
+  flex: 1 1 130px;
+  border: 1px solid #28435c;
+  border-radius: 8px;
+  padding: 12px 10px;
+  background: #102034;
+  color: var(--text);
+  font-size: 11px;
+  font-weight: bold;
+  transition: .2s;
+}
+
+.btn:hover { border-color: var(--cyan); background: #142b42; }
+.btn:active { transform: scale(.98); }
+
+.btn-primary {
+  color: #031019;
+  background: var(--cyan);
+  border-color: var(--cyan);
+}
+
+.btn-primary:hover {
+  color: #031019;
+  background: #8cecff;
+}
+
+.btn-green {
+  color: var(--green);
+  border-color: #53ffad45;
+}
+
+.btn-danger {
+  color: var(--danger);
+  border-color: #ff617c45;
+}
+
+.hidden { display: none !important; }
+
+.card {
+  border: 1px solid #38d9ff65;
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse at top right, #14334b66, transparent 60%),
+    #060d18;
+  padding: 20px;
+  box-shadow: 0 0 30px #38d9ff12;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-block;
+  border: 1px solid #53ffad50;
+  background: #53ffad0c;
+  color: var(--green);
+  padding: 7px 10px;
+  border-radius: 30px;
+  font-size: 9px;
+  letter-spacing: .6px;
+}
+
+.card h2 {
+  font-size: 20px;
+  margin: 13px 0 0;
+}
+
+.timestamp {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.8;
+}
+
+.content-box {
+  background: #030812;
+  border: 1px solid #20344a;
+  border-radius: 9px;
+  padding: 15px;
+  margin-top: 20px;
+}
+
+.content-label {
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.display-text {
+  color: var(--cyan);
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.meta-item {
+  background: #0a1523;
+  border: 1px solid #20344a;
+  border-radius: 8px;
+  padding: 11px;
+  min-width: 0;
+}
+
+.meta-label {
+  color: var(--muted);
+  font-size: 9px;
+  margin-bottom: 8px;
+}
+
+.meta-value {
+  color: var(--green);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.notice {
+  border: 1px solid #53ffad2b;
+  background: #53ffad08;
+  color: #a4e9c7;
+  padding: 15px;
+  border-radius: 9px;
+  font-size: 11px;
+  line-height: 1.9;
+  margin-top: 18px;
+}
+
+.notice strong { color: var(--green); }
+
+footer {
+  color: #53667a;
+  text-align: center;
+  font-size: 10px;
+  line-height: 2;
+  padding: 15px 0;
+}
+
+#history {
+  max-height: 190px;
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+}
+
+.history-entry {
+  color: #a7dce9;
+  border-left: 2px solid #38d9ff50;
+  padding-left: 10px;
+}
+
+@media (max-width: 420px) {
+  body { padding: 13px 10px 22px; }
+  .panel, .card { padding: 14px; }
+  .window-label { font-size: 9px; }
+  .btn { flex-basis: 100%; }
+  .meta { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="scanlines" aria-hidden="true"></div>
+
+<div class="app">
+  <header>
+    <h1 class="brand">SECURE_SHELL</h1>
+    <div class="subtitle">
+      TERMINAL PASSKEY RECORD SYSTEM // VERSION 3.0
+    </div>
+    <div class="status">
+      <span class="dot"></span>
+      LOCAL INTERFACE READY
+    </div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="windowbar">
+        <div class="lights" aria-hidden="true">
+          <span class="light red"></span>
+          <span class="light yellow"></span>
+          <span class="light green"></span>
+        </div>
+        <div class="window-label">TERMINAL // SESSION_001</div>
+      </div>
+
+      <div id="history" aria-live="polite">
+        <p class="terminal-line success">
+          [SYSTEM] Interface initialized successfully.
+        </p>
+        <p class="terminal-line info">
+          [INFO] Enter sample text to create a visual record card.
+        </p>
+        <p class="terminal-line cyan">
+          [READY] Waiting for input<span class="blinking-cursor">_</span>
+        </p>
+      </div>
+
+      <div class="section-title">// INPUT TERMINAL</div>
+
+      <form id="record-form">
+        <label class="field-label" for="passphrase">
+          ENTER TEXT / SAMPLE PASSPHRASE
+        </label>
+
+        <div class="input-wrap">
+          <span class="prompt">&gt;</span>
+          <input
+            id="passphrase"
+            type="password"
+            placeholder="Type your sample text..."
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            maxlength="2000"
+            required
+          >
+          <button class="mini-btn" type="button" id="toggle">
+            SHOW
+          </button>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" type="submit">
+            ▶ EXECUTE
+          </button>
+          <button class="btn" type="button" id="random">
+            ⟳ DEMO TEXT
+          </button>
+          <button class="btn btn-danger" type="button" id="reset">
+            ✕ CLEAR
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section id="result" class="panel hidden" aria-live="polite">
+      <div class="windowbar">
+        <span class="cyan">OUTPUT // RECORD_CARD</span>
+        <span class="window-label">RENDER_COMPLETE</span>
+      </div>
+
+      <article class="card" id="record-card">
+        <div class="card-top">
+          <div>
+            <span class="badge">◆ LOCAL RECORD CREATED</span>
+            <h2>Access Status Note</h2>
+          </div>
+          <div class="timestamp" id="timestamp"></div>
+        </div>
+
+        <div class="content-box">
+          <div class="content-label">RECORDED CONTENT</div>
+          <p class="display-text" id="output-text"></p>
+        </div>
+
+        <div class="meta">
+          <div class="meta-item">
+            <div class="meta-label">RECORD STATUS</div>
+            <div class="meta-value">CREATED LOCALLY</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">CHARACTER COUNT</div>
+            <div class="meta-value" id="character-count">0</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">RECORD TYPE</div>
+            <div class="meta-value">TEXT CARD</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">SESSION</div>
+            <div class="meta-value">BROWSER SESSION</div>
+          </div>
+        </div>
+      </article>
+
+      <div class="section-title">// EXPORT & TOOLS</div>
+
+      <div class="actions">
+        <button class="btn btn-green" id="save-text" type="button">
+          ↓ SAVE TXT
+        </button>
+        <button class="btn btn-primary" id="save-image" type="button">
+          ▣ SAVE PNG
+        </button>
+        <button class="btn" id="copy-text" type="button">
+          ▢ COPY TEXT
+        </button>
+      </div>
+
+      <p class="terminal-line info" id="export-status" aria-live="polite">
+        Choose an export option.
+      </p>
+    </section>
+
+    <section class="notice">
+      <strong>⚠ PRIVACY NOTICE</strong><br>
+      This demo does not intentionally transmit your input or save it to
+      a server. It is not an encryption tool, password vault, or real
+      authentication system. Do not enter real passwords or sensitive
+      information. Downloaded files contain the displayed text.
+      External fonts and libraries are not required by this version.
+    </section>
+  </main>
+
+  <footer>
+    SECURE_SHELL v3.0<br>
+    LOCAL DEMO INTERFACE // END OF TRANSMISSION
+  </footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const $ = id => document.getElementById(id);
+
+  const form = $("record-form");
+  const input = $("passphrase");
+  const toggle = $("toggle");
+  const history = $("history");
+  const result = $("result");
+  const output = $("output-text");
+  const timestamp = $("timestamp");
+  const count = $("character-count");
+  const exportStatus = $("export-status");
+
+  let currentText = "";
+  let currentDate = null;
+
+  function makeTimestamp(date) {
+    const pad = number => String(number).padStart(2, "0");
+
+    return date.getFullYear() + "-" +
+      pad(date.getMonth() + 1) + "-" +
+      pad(date.getDate()) + " " +
+      pad(date.getHours()) + ":" +
+      pad(date.getMinutes()) + ":" +
+      pad(date.getSeconds());
+  }
+
+  function addHistory(message, className = "cyan") {
+    const entry = document.createElement("p");
+    entry.className = "terminal-line history-entry " + className;
+
+    const time = document.createElement("span");
+    time.className = "info";
+    time.textContent = "[" + makeTimestamp(new Date()).slice(11) + "] ";
+
+    entry.append(time, document.createTextNode(message));
+    history.appendChild(entry);
+
+    while (history.children.length > 30) {
+      history.removeChild(history.children[0]);
+    }
+  }
+
+  function showRecord(text) {
+    currentText = text;
+    currentDate = new Date();
+
+    output.textContent = currentText;
+    timestamp.textContent = makeTimestamp(currentDate);
+    count.textContent = Array.from(currentText).length + " characters";
+
+    result.classList.remove("hidden");
+    exportStatus.textContent = "Record ready for export.";
+
+    addHistory("Record created successfully.", "success");
+
+    result.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+
+    const text = input.value.trim();
+
+    if (!text) {
+      addHistory("Input is empty. Enter some sample text.", "info");
+      input.focus();
+      return;
+    }
+
+    showRecord(text);
+    input.value = "";
+    input.type = "password";
+    toggle.textContent = "SHOW";
+  });
+
+  toggle.addEventListener("click", () => {
+    const showing = input.type === "text";
+    input.type = showing ? "password" : "text";
+    toggle.textContent = showing ? "SHOW" : "HIDE";
+  });
+
+  $("random").addEventListener("click", () => {
+    const samples = [
+      "DEMO_ACCESS_2048",
+      "ORBITAL_SYSTEM_ONLINE",
+      "CYBER_TERMINAL_ALPHA",
+      "LOCAL_SESSION_READY",
+      "NEON_PROTOCOL_7X"
+    ];
+
+    input.value = samples[Math.floor(Math.random() * samples.length)];
+    input.type = "text";
+    toggle.textContent = "HIDE";
+    input.focus();
+    addHistory("Demo text loaded. No real credentials needed.");
+  });
+
+  $("reset").addEventListener("click", () => {
+    input.value = "";
+    input.type = "password";
+    toggle.textContent = "SHOW";
+
+    currentText = "";
+    currentDate = null;
+
+    output.textContent = "";
+    timestamp.textContent = "";
+    count.textContent = "0";
+    result.classList.add("hidden");
+    exportStatus.textContent = "Record cleared.";
+
+    addHistory("Current record cleared from the interface.", "info");
+    input.focus();
+  });
+
+  function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+
+    anchor.href = url;
+    anchor.download = filename;
+    anchor.style.display = "none";
+
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+  }
+
+  function getFilename(extension) {
+    const date = new Date();
+    const stamp = date.getFullYear() +
+      String(date.getMonth() + 1).padStart(2, "0") +
+      String(date.getDate()).padStart(2, "0") + "_" +
+      String(date.getHours()).padStart(2, "0") +
+      String(date.getMinutes()).padStart(2, "0") +
+      String(date.getSeconds()).padStart(2, "0");
+
+    return "SecureShell_Record_" + stamp + "." + extension;
+  }
+
+  $("save-text").addEventListener("click", () => {
+    if (!currentDate || !currentText) return;
+
+    const content = [
+      "========================================",
+      "       SECURE_SHELL RECORD CARD",
+      "========================================",
+      "Created   : " + makeTimestamp(currentDate),
+      "Content   :",
+      currentText,
+      "----------------------------------------",
+      "Record type: Local demo record",
+      "Note: This is not an authentication proof.",
+      "========================================"
+    ].join("\r\n");
+
+    downloadBlob(
+      new Blob([content], { type: "text/plain;charset=utf-8" }),
+      getFilename("txt")
+    );
+
+    exportStatus.textContent = "TXT export requested.";
+    addHistory("Text file export requested.", "success");
+  });
+
+  function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
+    const paragraphs = text.split(/\r?\n/);
+    let currentY = y;
+
+    for (const paragraph of paragraphs) {
+      if (paragraph === "") {
+        currentY += lineHeight;
+        continue;
+      }
+
+      const words = paragraph.split(/\s+/);
+      let line = "";
+
+      for (const word of words) {
+        // Split extremely long words so they fit the canvas.
+        let pieces = [word];
+
+        while (pieces.some(piece => ctx.measureText(piece).width > maxWidth)) {
+          const next = [];
+
+          for (const piece of pieces) {
+            if (ctx.measureText(piece).width <= maxWidth) {
+              next.push(piece);
+              continue;
+            }
+
+            let part = "";
+
+            for (const char of piece) {
+              if (part && ctx.measureText(part + char).width > maxWidth) {
+                next.push(part);
+                part = char;
+              } else {
+                part += char;
+              }
+            }
+
+            if (part) next.push(part);
+          }
+
+          pieces = next;
+        }
+
+        for (const piece of pieces) {
+          const candidate = line ? line + " " + piece : piece;
+
+          if (ctx.measureText(candidate).width > maxWidth && line) {
+            ctx.fillText(line, x, currentY);
+            currentY += lineHeight;
+            line = piece;
+          } else {
+            line = candidate;
+          }
+        }
+      }
+
+      if (line) {
+        ctx.fillText(line, x, currentY);
+        currentY += lineHeight;
+      }
+    }
+
+    return currentY;
+  }
+
+  $("save-image").addEventListener("click", () => {
+    if (!currentDate || !currentText) return;
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) {
+      exportStatus.textContent = "Canvas is not supported in this browser.";
+      return;
+    }
+
+    const width = 1000;
+    const padding = 55;
+    const innerWidth = width - padding * 2;
+    const maxTextWidth = innerWidth - 40;
+
+    // Measure text first to size the image for long records.
+    ctx.font = "bold 27px monospace";
+    const words = currentText.split(/\s+/);
+    let line = "";
+    let lineCount = 1;
+
+    for (const word of words) {
+      let candidate = line ? line + " " + word : word;
+
+      if (ctx.measureText(candidate).width > maxTextWidth && line) {
+        lineCount++;
+        line = word;
+      } else {
+        line = candidate;
+      }
+    }
+
+    lineCount += (currentText.match(/\n/g) || []).length;
+    lineCount = Math.max(lineCount, 1);
+
+    const estimatedHeight = 480 + lineCount * 38;
+    canvas.width = width;
+    canvas.height = Math.min(estimatedHeight, 12000);
+
+    const height = canvas.height;
+
+    const gradient = ctx.createLinearGradient(0, 0, width, height);
+    gradient.addColorStop(0, "#0c1a2c");
+    gradient.addColorStop(1, "#030811");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+
+    // Grid decoration.
+    ctx.strokeStyle = "#38d9ff0c";
+    ctx.lineWidth = 1;
+
+    for (let x = 0; x < width; x += 35) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+    }
+
+    for (let y = 0; y < height; y += 35) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
+    }
+
+    // Outer frame.
+    ctx.strokeStyle = "#38d9ff";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(18, 18, width - 36, height - 36);
+
+    ctx.fillStyle = "#10243a";
+    ctx.fillRect(32, 32,
