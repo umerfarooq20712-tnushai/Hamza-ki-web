@@ -5,22 +5,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#070b14">
-<title>Secure Shell | Card Generator</title>
+<title>SECURE_SHELL | Access Card Generator</title>
 
 <style>
 :root {
+  --bg: #070b14;
+  --panel: #0c1726;
   --cyan: #45e5ff;
   --green: #65ffb0;
-  --bg: #070b14;
-  --panel: #0d1727;
+  --muted: #8296ab;
+  --border: #29445c;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  padding: 22px 15px;
   min-height: 100vh;
+  padding: 22px 15px;
   background:
     radial-gradient(ellipse at top, #102b42, transparent 65%),
     var(--bg);
@@ -29,29 +31,30 @@ body {
 }
 
 .app {
-  width: 100%;
   max-width: 540px;
-  margin: 0 auto;
+  width: 100%;
+  margin: auto;
 }
 
 header {
   text-align: center;
-  margin: 18px 0 26px;
+  margin: 16px 0 28px;
 }
 
 h1 {
-  font-size: clamp(27px, 7vw, 39px);
-  color: var(--cyan);
-  letter-spacing: 2px;
-  text-shadow: 0 0 18px #45e5ff65;
   margin: 0;
+  font-size: clamp(28px, 7vw, 40px);
+  letter-spacing: 2px;
+  color: var(--cyan);
+  text-shadow: 0 0 18px #45e5ff50;
+  overflow-wrap: anywhere;
 }
 
 .subtitle {
-  color: #8196ac;
-  font-size: 11px;
-  letter-spacing: 1px;
-  line-height: 1.8;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.9;
+  letter-spacing: 1.2px;
   margin-top: 12px;
 }
 
@@ -66,28 +69,25 @@ h1 {
 }
 
 .panel {
-  padding: 20px;
-  background: #0b1422ee;
+  background: #0b1422ed;
   border: 1px solid #45e5ff36;
-  border-radius: 14px;
-  box-shadow: 0 0 30px #45e5ff0b;
+  border-radius: 13px;
+  padding: 20px;
+  box-shadow: 0 0 30px #45e5ff09;
 }
 
 .window {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   padding-bottom: 15px;
   border-bottom: 1px solid #ffffff15;
-  color: #8196ac;
+  color: var(--muted);
   font-size: 10px;
-  gap: 10px;
 }
 
-.lights {
-  display: flex;
-  gap: 6px;
-}
+.lights { display: flex; gap: 6px; }
 
 .light {
   width: 10px;
@@ -99,18 +99,17 @@ h1 {
 .yellow { background: #ffca51; }
 .green { background: #55ed8c; }
 
-.message {
-  font-size: 12px;
-  color: var(--green);
-  line-height: 1.9;
+.terminal {
   margin: 20px 0;
+  color: var(--green);
+  font-size: 12px;
+  line-height: 2;
 }
 
-.label {
-  display: block;
-  font-size: 11px;
+.section-label {
   color: var(--cyan);
-  margin: 18px 0 10px;
+  font-size: 11px;
+  margin: 22px 0 12px;
 }
 
 .input-wrap {
@@ -118,9 +117,9 @@ h1 {
   align-items: center;
   gap: 10px;
   padding: 5px 12px;
-  border: 1px solid #29465e;
-  background: #050b14;
+  border: 1px solid var(--border);
   border-radius: 9px;
+  background: #050b14;
 }
 
 .prompt {
@@ -129,74 +128,83 @@ h1 {
 }
 
 input {
-  min-width: 0;
   width: 100%;
+  min-width: 0;
   padding: 15px 0;
+  color: var(--cyan);
+  background: transparent;
   border: 0;
   outline: none;
-  background: transparent;
-  color: var(--cyan);
   font: 14px "Courier New", monospace;
 }
 
-input::placeholder { color: #64778b; }
+input::placeholder { color: #718398; }
+
+input:focus-visible {
+  outline: none;
+}
+
+.input-wrap:focus-within {
+  border-color: var(--cyan);
+  box-shadow: 0 0 12px #45e5ff15;
+}
 
 button {
   width: 100%;
-  margin-top: 15px;
-  padding: 15px;
+  margin-top: 16px;
+  padding: 16px 12px;
   border: 1px solid var(--cyan);
-  border-radius: 9px;
-  background: var(--cyan);
-  color: #031019;
-  font: bold 12px "Courier New", monospace;
-  letter-spacing: 1px;
-  cursor: pointer;
-}
-
-button:active { transform: scale(.98); }
-
-#result {
-  margin-top: 20px;
-}
-
-#result.hidden { display: none; }
-
-.result-heading {
-  color: var(--green);
-  font-size: 11px;
-  margin: 20px 0 12px;
-}
-
-#card-image {
-  display: block;
-  width: 100%;
-  height: auto;
-  border: 1px solid #45e5ff70;
   border-radius: 8px;
-  background: #050b14;
-  -webkit-touch-callout: default;
-  user-select: auto;
+  background: var(--cyan);
+  color: #04111a;
+  font: bold 12px "Courier New", monospace;
+  letter-spacing: 1.2px;
+  cursor: pointer;
+  transition: background .2s;
 }
 
-.tip {
-  font-size: 11px;
+button:hover { background: #91efff; }
+
+button:disabled {
+  opacity: .65;
+  cursor: wait;
+}
+
+.notice {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid #65ffb027;
+  border-radius: 9px;
+  color: #a8d9c1;
+  font-size: 10px;
   line-height: 1.9;
-  color: #9cb1c5;
-  margin-top: 13px;
+}
+
+.notice strong { color: var(--green); }
+
+#message {
+  min-height: 18px;
+  margin: 13px 0 0;
+  font-size: 11px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 
 footer {
-  text-align: center;
+  margin: 25px 0 10px;
   color: #53677c;
+  text-align: center;
   font-size: 10px;
   line-height: 2;
-  margin: 25px 0;
 }
 
 @media (max-width: 360px) {
   body { padding: 16px 10px; }
   .panel { padding: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
 }
 </style>
 </head>
@@ -207,9 +215,9 @@ footer {
   <header>
     <h1>SECURE_SHELL</h1>
     <div class="subtitle">
-      PERSONAL CARD GENERATOR // V4.0
+      PERSONAL ACCESS CARD SYSTEM // V5.0
     </div>
-    <div class="status">● LOCAL DEMO SYSTEM ONLINE</div>
+    <div class="status">● SYSTEM ONLINE</div>
   </header>
 
   <section class="panel">
@@ -222,14 +230,14 @@ footer {
       <span>TERMINAL // READY</span>
     </div>
 
-    <div class="message">
-      [SYSTEM] Interface initialized.<br>
-      [READY] Enter demo text to generate your card.
+    <div class="terminal">
+      [SYSTEM] Card rendering engine initialized.<br>
+      [READY] Enter text to create your access card.
     </div>
 
-    <form id="generator">
-      <label class="label" for="passkey">
-        // ENTER YOUR DEMO TEXT
+    <form id="card-form">
+      <label class="section-label" for="passkey">
+        // ACCESS PASSKEY
       </label>
 
       <div class="input-wrap">
@@ -237,217 +245,320 @@ footer {
         <input
           id="passkey"
           type="text"
-          name="demo-card-text"
-          placeholder="Write your mobile passkey 🤣"
+          name="access-card-content"
+          placeholder="Write your mobile passkey"
           autocomplete="off"
           autocapitalize="off"
           spellcheck="false"
-          maxlength="300"
+          maxlength="500"
           required
         >
       </div>
 
-      <button type="submit">
-        ✦ GENERATE CARD
+      <button id="generate" type="submit">
+        GENERATE CARD
       </button>
     </form>
+
+    <p id="message" role="status" aria-live="polite"></p>
   </section>
 
-  <section id="result" class="panel hidden">
-    <div class="window">
-      <span style="color:#45e5ff">OUTPUT // IMAGE CARD</span>
-      <span>PNG</span>
-    </div>
-
-    <div class="result-heading">
-      ✓ YOUR CARD IS READY
-    </div>
-
-    <img
-      id="card-image"
-      alt="Your generated demo card. Press and hold to save the image."
-    >
-
-    <p class="tip">
-      📱 <strong style="color:#45e5ff">
-      To save your image:
-      </strong><br>
-      Press and hold the card above, then select
-      “Download image” or “Save image” if your browser offers that option.
-      No automatic download is triggered.
-    </p>
-  </section>
+  <div class="notice">
+    <strong>LOCAL PROCESSING</strong><br>
+    The card is rendered in your browser and downloaded as a PNG.
+    This is a visual record, not an authentication or encryption system.
+    Avoid entering real phone unlock codes or account passwords.
+  </div>
 
   <footer>
-    SECURE_SHELL V4.0<br>
-    LOCAL DEMO // NO SERVER SUBMISSION
+    SECURE_SHELL V5.0<br>
+    PERSONAL ACCESS CARD SYSTEM
   </footer>
 
 </main>
 
 <script>
 (() => {
-  const form = document.getElementById("generator");
+  "use strict";
+
+  const form = document.getElementById("card-form");
   const input = document.getElementById("passkey");
-  const result = document.getElementById("result");
-  const image = document.getElementById("card-image");
+  const button = document.getElementById("generate");
+  const message = document.getElementById("message");
 
-  form.addEventListener("submit", event => {
-    event.preventDefault();
+  function makeTimestamp(date) {
+    const pad = n => String(n).padStart(2, "0");
 
-    const text = input.value.trim();
-    if (!text) {
-      input.focus();
-      return;
+    return date.getFullYear() + "-" +
+      pad(date.getMonth() + 1) + "-" +
+      pad(date.getDate()) + " " +
+      pad(date.getHours()) + ":" +
+      pad(date.getMinutes()) + ":" +
+      pad(date.getSeconds());
+  }
+
+  function wrapText(ctx, text, maxWidth) {
+    const lines = [];
+
+    for (const paragraph of text.split(/\r?\n/)) {
+      if (!paragraph) {
+        lines.push("");
+        continue;
+      }
+
+      let line = "";
+
+      for (const word of paragraph.split(/\s+/)) {
+        // Split extremely long words when necessary.
+        let remaining = word;
+
+        while (ctx.measureText(remaining).width > maxWidth) {
+          let part = "";
+
+          for (const character of remaining) {
+            if (ctx.measureText(part + character).width > maxWidth) {
+              break;
+            }
+            part += character;
+          }
+
+          if (!part) break;
+
+          if (line) {
+            lines.push(line);
+            line = "";
+          }
+
+          lines.push(part);
+          remaining = remaining.slice(part.length);
+        }
+
+        if (!remaining) continue;
+
+        const candidate = line
+          ? line + " " + remaining
+          : remaining;
+
+        if (ctx.measureText(candidate).width > maxWidth && line) {
+          lines.push(line);
+          line = remaining;
+        } else {
+          line = candidate;
+        }
+      }
+
+      if (line) lines.push(line);
     }
 
-    // Create an image locally without downloading it.
+    return lines;
+  }
+
+  function createCard(text, date) {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    const width = 900;
-    const padding = 55;
-    const maxWidth = width - padding * 2 - 40;
-    const lineHeight = 43;
+    if (!ctx) throw new Error("Canvas is not supported.");
+
+    const width = 1000;
+    const padding = 58;
+    const maxTextWidth = width - padding * 2 - 42;
+    const lineHeight = 40;
 
     ctx.font = "bold 27px monospace";
+    const lines = wrapText(ctx, text, maxTextWidth);
 
-    // Wrap the text into lines.
-    const words = text.split(/\s+/);
-    const lines = [];
-    let line = "";
+    const headerHeight = 145;
+    const contentTop = 185;
+    const contentPaddingTop = 76;
+    const footerSpace = 100;
 
-    for (const word of words) {
-      let remaining = word;
-
-      while (ctx.measureText(remaining).width > maxWidth) {
-        let part = "";
-
-        for (const char of remaining) {
-          if (ctx.measureText(part + char).width > maxWidth) break;
-          part += char;
-        }
-
-        if (!part) break;
-
-        if (line) {
-          lines.push(line);
-          line = "";
-        }
-
-        lines.push(part);
-        remaining = remaining.slice(part.length);
-      }
-
-      const candidate = line
-        ? line + " " + remaining
-        : remaining;
-
-      if (ctx.measureText(candidate).width > maxWidth && line) {
-        lines.push(line);
-        line = remaining;
-      } else {
-        line = candidate;
-      }
-    }
-
-    if (line) lines.push(line);
-
-    canvas.width = width;
-    canvas.height = Math.max(410, 310 + lines.length * lineHeight);
-
-    // Background.
-    const gradient = ctx.createLinearGradient(
-      0, 0, width, canvas.height
+    const contentHeight = Math.max(
+      180,
+      contentPaddingTop + lines.length * lineHeight + 30
     );
 
+    canvas.width = width;
+    canvas.height = contentTop + contentHeight + footerSpace;
+
+    const height = canvas.height;
+
+    // Background gradient.
+    const gradient = ctx.createLinearGradient(0, 0, width, height);
     gradient.addColorStop(0, "#10243b");
     gradient.addColorStop(1, "#030811");
 
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, width, canvas.height);
+    ctx.fillRect(0, 0, width, height);
 
-    // Neon border.
+    // Subtle technical grid.
+    ctx.strokeStyle = "#45e5ff0b";
+    ctx.lineWidth = 1;
+
+    for (let x = 0; x < width; x += 35) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+    }
+
+    for (let y = 0; y < height; y += 35) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
+    }
+
+    // Outer border.
     ctx.strokeStyle = "#45e5ff";
     ctx.lineWidth = 3;
-    ctx.strokeRect(18, 18, width - 36, canvas.height - 36);
+    ctx.strokeRect(18, 18, width - 36, height - 36);
 
-    // Decorative header.
+    // Header.
     ctx.fillStyle = "#142a42";
-    ctx.fillRect(32, 32, width - 64, 85);
+    ctx.fillRect(32, 32, width - 64, headerHeight - 45);
 
-    ["#ff5b65", "#ffca51", "#55ed8c"].forEach(
-      (color, index) => {
-        ctx.beginPath();
-        ctx.fillStyle = color;
-        ctx.arc(58 + index * 25, 60, 7, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    );
+    const lights = ["#ff5b65", "#ffca51", "#55ed8c"];
+
+    lights.forEach((color, i) => {
+      ctx.beginPath();
+      ctx.fillStyle = color;
+      ctx.arc(60 + i * 26, 62, 7, 0, Math.PI * 2);
+      ctx.fill();
+    });
 
     ctx.fillStyle = "#45e5ff";
-    ctx.font = "bold 27px monospace";
-    ctx.fillText("SECURE_SHELL", 150, 70);
+    ctx.font = "bold 30px monospace";
+    ctx.fillText("SECURE_SHELL", 155, 70);
 
     ctx.fillStyle = "#9cb1c5";
-    ctx.font = "15px monospace";
-    ctx.fillText("PERSONAL DEMO CARD", 150, 96);
+    ctx.font = "16px monospace";
+    ctx.fillText("PERSONAL ACCESS RECORD", 155, 100);
 
-    // Timestamp.
+    // Date.
     ctx.fillStyle = "#9cb1c5";
     ctx.font = "17px monospace";
+    ctx.fillText(
+      "CREATED: " + makeTimestamp(date),
+      padding,
+      163
+    );
 
-    const date = new Date();
-    const stamp =
-      date.getFullYear() + "-" +
-      String(date.getMonth() + 1).padStart(2, "0") + "-" +
-      String(date.getDate()).padStart(2, "0") + " " +
-      String(date.getHours()).padStart(2, "0") + ":" +
-      String(date.getMinutes()).padStart(2, "0");
-
-    ctx.fillText("CREATED: " + stamp, padding, 160);
-
-    // Content box.
-    const boxTop = 190;
-    const boxHeight = canvas.height - 270;
-
+    // Content area.
     ctx.fillStyle = "#040a13";
-    ctx.fillRect(padding, boxTop, width - padding * 2, boxHeight);
+    ctx.fillRect(
+      padding,
+      contentTop,
+      width - padding * 2,
+      contentHeight
+    );
 
     ctx.strokeStyle = "#28455c";
-    ctx.strokeRect(padding, boxTop, width - padding * 2, boxHeight);
+    ctx.lineWidth = 2;
+    ctx.strokeRect(
+      padding,
+      contentTop,
+      width - padding * 2,
+      contentHeight
+    );
 
     ctx.fillStyle = "#7e95ab";
     ctx.font = "16px monospace";
-    ctx.fillText("YOUR TEXT", padding + 20, boxTop + 35);
+    ctx.fillText("ACCESS CONTENT", padding + 22, contentTop + 35);
 
     ctx.fillStyle = "#45e5ff";
     ctx.font = "bold 27px monospace";
 
-    lines.forEach((item, index) => {
+    lines.forEach((line, index) => {
       ctx.fillText(
-        item,
-        padding + 20,
-        boxTop + 80 + index * lineHeight
+        line,
+        padding + 22,
+        contentTop + contentPaddingTop + index * lineHeight
       );
     });
 
+    // Footer.
     ctx.fillStyle = "#65ffb0";
-    ctx.font = "15px monospace";
+    ctx.font = "16px monospace";
     ctx.fillText(
-      "LOCAL DEMO // NOT AN AUTHENTICATION PROOF",
+      "SECURE_SHELL // ACCESS RECORD",
       padding,
-      canvas.height - 48
+      height - 64
     );
 
-    // Display the generated image on the page.
-    image.src = canvas.toDataURL("image/png");
-    result.classList.remove("hidden");
+    ctx.fillStyle = "#8ba0b5";
+    ctx.font = "13px monospace";
+    ctx.fillText(
+      "VISUAL RECORD // NOT AUTHENTICATION PROOF",
+      padding,
+      height - 40
+    );
 
-    result.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
+    return canvas;
+  }
+
+  function downloadCanvas(canvas) {
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(blob => {
+        if (!blob) {
+          reject(new Error("Could not create the PNG image."));
+          return;
+        }
+
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        const now = new Date();
+        const stamp = now.getFullYear() +
+          String(now.getMonth() + 1).padStart(2, "0") +
+          String(now.getDate()).padStart(2, "0") + "_" +
+          String(now.getHours()).padStart(2, "0") +
+          String(now.getMinutes()).padStart(2, "0") +
+          String(now.getSeconds()).padStart(2, "0");
+
+        anchor.href = url;
+        anchor.download = "SecureShell_AccessCard_" + stamp + ".png";
+        anchor.style.display = "none";
+
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+
+        // Give the browser time to start the download.
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+          resolve();
+        }, 1500);
+      }, "image/png");
     });
+  }
+
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const text = input.value.trim();
+
+    if (!text) {
+      message.textContent = "Enter some text to generate your card.";
+      input.focus();
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = "GENERATING...";
+    message.textContent = "Creating your PNG card...";
+
+    try {
+      const canvas = createCard(text, new Date());
+      await downloadCanvas(canvas);
+
+      message.textContent =
+        "PNG download requested. Check your browser's Downloads.";
+    } catch (error) {
+      message.textContent =
+        error.message || "Unable to generate the image.";
+    } finally {
+      button.disabled = false;
+      button.textContent = "GENERATE CARD";
+    }
   });
 })();
 </script>
