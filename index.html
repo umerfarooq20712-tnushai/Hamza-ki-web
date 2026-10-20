@@ -10,7 +10,6 @@
 <style>
 :root {
   --bg: #070b14;
-  --panel: #0c1726;
   --cyan: #45e5ff;
   --green: #65ffb0;
   --muted: #8296ab;
@@ -87,7 +86,10 @@ h1 {
   font-size: 10px;
 }
 
-.lights { display: flex; gap: 6px; }
+.lights {
+  display: flex;
+  gap: 6px;
+}
 
 .light {
   width: 10px;
@@ -107,6 +109,7 @@ h1 {
 }
 
 .section-label {
+  display: block;
   color: var(--cyan);
   font-size: 11px;
   margin: 22px 0 12px;
@@ -140,10 +143,6 @@ input {
 
 input::placeholder { color: #718398; }
 
-input:focus-visible {
-  outline: none;
-}
-
 .input-wrap:focus-within {
   border-color: var(--cyan);
   box-shadow: 0 0 12px #45e5ff15;
@@ -160,34 +159,15 @@ button {
   font: bold 12px "Courier New", monospace;
   letter-spacing: 1.2px;
   cursor: pointer;
-  transition: background .2s;
 }
 
-button:hover { background: #91efff; }
-
-button:disabled {
-  opacity: .65;
-  cursor: wait;
+button:active {
+  background: #91efff;
 }
 
-.notice {
-  margin-top: 18px;
-  padding: 14px;
-  border: 1px solid #65ffb027;
-  border-radius: 9px;
-  color: #a8d9c1;
-  font-size: 10px;
-  line-height: 1.9;
-}
-
-.notice strong { color: var(--green); }
-
-#message {
-  min-height: 18px;
-  margin: 13px 0 0;
-  font-size: 11px;
-  line-height: 1.7;
-  overflow-wrap: anywhere;
+button:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 3px;
 }
 
 footer {
@@ -202,10 +182,6 @@ footer {
   body { padding: 16px 10px; }
   .panel { padding: 15px; }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; }
-}
 </style>
 </head>
 
@@ -215,7 +191,7 @@ footer {
   <header>
     <h1>SECURE_SHELL</h1>
     <div class="subtitle">
-      PERSONAL ACCESS CARD SYSTEM // V5.0
+      PERSONAL ACCESS CARD SYSTEM // V5.1
     </div>
     <div class="status">● SYSTEM ONLINE</div>
   </header>
@@ -259,19 +235,10 @@ footer {
         GENERATE CARD
       </button>
     </form>
-
-    <p id="message" role="status" aria-live="polite"></p>
   </section>
 
-  <div class="notice">
-    <strong>LOCAL PROCESSING</strong><br>
-    The card is rendered in your browser and downloaded as a PNG.
-    This is a visual record, not an authentication or encryption system.
-    Avoid entering real phone unlock codes or account passwords.
-  </div>
-
   <footer>
-    SECURE_SHELL V5.0<br>
+    SECURE_SHELL V5.1<br>
     PERSONAL ACCESS CARD SYSTEM
   </footer>
 
@@ -283,8 +250,6 @@ footer {
 
   const form = document.getElementById("card-form");
   const input = document.getElementById("passkey");
-  const button = document.getElementById("generate");
-  const message = document.getElementById("message");
 
   function makeTimestamp(date) {
     const pad = n => String(n).padStart(2, "0");
@@ -309,16 +274,17 @@ footer {
       let line = "";
 
       for (const word of paragraph.split(/\s+/)) {
-        // Split extremely long words when necessary.
         let remaining = word;
 
+        // Break very long words into smaller pieces.
         while (ctx.measureText(remaining).width > maxWidth) {
           let part = "";
 
           for (const character of remaining) {
-            if (ctx.measureText(part + character).width > maxWidth) {
-              break;
-            }
+            if (
+              ctx.measureText(part + character).width > maxWidth
+            ) break;
+
             part += character;
           }
 
@@ -339,7 +305,9 @@ footer {
           ? line + " " + remaining
           : remaining;
 
-        if (ctx.measureText(candidate).width > maxWidth && line) {
+        if (
+          ctx.measureText(candidate).width > maxWidth && line
+        ) {
           lines.push(line);
           line = remaining;
         } else {
@@ -357,7 +325,9 @@ footer {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    if (!ctx) throw new Error("Canvas is not supported.");
+    if (!ctx) {
+      throw new Error("Canvas is not supported.");
+    }
 
     const width = 1000;
     const padding = 58;
@@ -365,12 +335,11 @@ footer {
     const lineHeight = 40;
 
     ctx.font = "bold 27px monospace";
+
     const lines = wrapText(ctx, text, maxTextWidth);
 
-    const headerHeight = 145;
     const contentTop = 185;
     const contentPaddingTop = 76;
-    const footerSpace = 100;
 
     const contentHeight = Math.max(
       180,
@@ -378,11 +347,11 @@ footer {
     );
 
     canvas.width = width;
-    canvas.height = contentTop + contentHeight + footerSpace;
+    canvas.height = contentTop + contentHeight + 100;
 
     const height = canvas.height;
 
-    // Background gradient.
+    // Background.
     const gradient = ctx.createLinearGradient(0, 0, width, height);
     gradient.addColorStop(0, "#10243b");
     gradient.addColorStop(1, "#030811");
@@ -408,21 +377,21 @@ footer {
       ctx.stroke();
     }
 
-    // Outer border.
+    // Neon border.
     ctx.strokeStyle = "#45e5ff";
     ctx.lineWidth = 3;
     ctx.strokeRect(18, 18, width - 36, height - 36);
 
     // Header.
     ctx.fillStyle = "#142a42";
-    ctx.fillRect(32, 32, width - 64, headerHeight - 45);
+    ctx.fillRect(32, 32, width - 64, 100);
 
-    const lights = ["#ff5b65", "#ffca51", "#55ed8c"];
+    const colors = ["#ff5b65", "#ffca51", "#55ed8c"];
 
-    lights.forEach((color, i) => {
+    colors.forEach((color, index) => {
       ctx.beginPath();
       ctx.fillStyle = color;
-      ctx.arc(60 + i * 26, 62, 7, 0, Math.PI * 2);
+      ctx.arc(60 + index * 26, 62, 7, 0, Math.PI * 2);
       ctx.fill();
     });
 
@@ -434,7 +403,7 @@ footer {
     ctx.font = "16px monospace";
     ctx.fillText("PERSONAL ACCESS RECORD", 155, 100);
 
-    // Date.
+    // Timestamp.
     ctx.fillStyle = "#9cb1c5";
     ctx.font = "17px monospace";
     ctx.fillText(
@@ -476,7 +445,7 @@ footer {
       );
     });
 
-    // Footer.
+    // Footer printed on the card.
     ctx.fillStyle = "#65ffb0";
     ctx.font = "16px monospace";
     ctx.fillText(
@@ -488,7 +457,7 @@ footer {
     ctx.fillStyle = "#8ba0b5";
     ctx.font = "13px monospace";
     ctx.fillText(
-      "VISUAL RECORD // NOT AUTHENTICATION PROOF",
+      "PERSONAL ACCESS CARD",
       padding,
       height - 40
     );
@@ -500,14 +469,17 @@ footer {
     return new Promise((resolve, reject) => {
       canvas.toBlob(blob => {
         if (!blob) {
-          reject(new Error("Could not create the PNG image."));
+          reject(new Error("PNG generation failed."));
           return;
         }
 
         const url = URL.createObjectURL(blob);
         const anchor = document.createElement("a");
+
         const now = new Date();
-        const stamp = now.getFullYear() +
+
+        const stamp =
+          now.getFullYear() +
           String(now.getMonth() + 1).padStart(2, "0") +
           String(now.getDate()).padStart(2, "0") + "_" +
           String(now.getHours()).padStart(2, "0") +
@@ -522,11 +494,11 @@ footer {
         anchor.click();
         anchor.remove();
 
-        // Give the browser time to start the download.
+        // No on-page download status or animation.
         setTimeout(() => {
           URL.revokeObjectURL(url);
           resolve();
-        }, 1500);
+        }, 2000);
       }, "image/png");
     });
   }
@@ -537,27 +509,17 @@ footer {
     const text = input.value.trim();
 
     if (!text) {
-      message.textContent = "Enter some text to generate your card.";
       input.focus();
       return;
     }
 
-    button.disabled = true;
-    button.textContent = "GENERATING...";
-    message.textContent = "Creating your PNG card...";
-
     try {
       const canvas = createCard(text, new Date());
       await downloadCanvas(canvas);
-
-      message.textContent =
-        "PNG download requested. Check your browser's Downloads.";
     } catch (error) {
-      message.textContent =
-        error.message || "Unable to generate the image.";
-    } finally {
-      button.disabled = false;
-      button.textContent = "GENERATE CARD";
+      // Only show a message if something actually fails.
+      console.error("Card generation failed:", error);
+      alert("Unable to generate the card. Please try again.");
     }
   });
 })();
