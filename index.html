@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,9 +22,7 @@ body {
   margin: 0;
   min-height: 100vh;
   padding: 22px 15px;
-  background:
-    radial-gradient(ellipse at top, #102b42, transparent 65%),
-    var(--bg);
+  background: radial-gradient(ellipse at top, #102b42, transparent 65%), var(--bg);
   color: #d9f7ff;
   font-family: "Courier New", monospace;
 }
@@ -160,9 +159,7 @@ button {
   cursor: pointer;
 }
 
-button:active {
-  background: #91efff;
-}
+button:active { background: #91efff; }
 
 button:focus-visible {
   outline: 2px solid white;
@@ -190,9 +187,9 @@ footer {
   <header>
     <h1>SECURE_SHELL</h1>
     <div class="subtitle">
-      PERSONAL ACCESS CARD SYSTEM // V5.1
+      PERSONAL ACCESS CARD SYSTEM // V5.2
     </div>
-    <div class="status">● SYSTEM ONLINE</div>
+    <div class="status">SYSTEM ONLINE</div>
   </header>
 
   <section class="panel">
@@ -230,14 +227,12 @@ footer {
         >
       </div>
 
-      <button id="generate" type="submit">
-        GENERATE CARD
-      </button>
+      <button type="submit">GENERATE CARD</button>
     </form>
   </section>
 
   <footer>
-    SECURE_SHELL V5.1<br>
+    SECURE_SHELL V5.2<br>
     PERSONAL ACCESS CARD SYSTEM
   </footer>
 
@@ -250,7 +245,7 @@ footer {
   const form = document.getElementById("card-form");
   const input = document.getElementById("passkey");
 
-  function makeTimestamp(date) {
+  function timestamp(date) {
     const pad = n => String(n).padStart(2, "0");
 
     return date.getFullYear() + "-" +
@@ -259,6 +254,19 @@ footer {
       pad(date.getHours()) + ":" +
       pad(date.getMinutes()) + ":" +
       pad(date.getSeconds());
+  }
+
+  function fileName() {
+    const d = new Date();
+    const pad = n => String(n).padStart(2, "0");
+
+    return "SecureShell_AccessCard_" +
+      d.getFullYear() +
+      pad(d.getMonth() + 1) +
+      pad(d.getDate()) + "_" +
+      pad(d.getHours()) +
+      pad(d.getMinutes()) +
+      pad(d.getSeconds()) + ".png";
   }
 
   function wrapText(ctx, text, maxWidth) {
@@ -278,9 +286,9 @@ footer {
         while (ctx.measureText(remaining).width > maxWidth) {
           let part = "";
 
-          for (const character of remaining) {
-            if (ctx.measureText(part + character).width > maxWidth) break;
-            part += character;
+          for (const ch of remaining) {
+            if (ctx.measureText(part + ch).width > maxWidth) break;
+            part += ch;
           }
 
           if (!part) break;
@@ -316,9 +324,7 @@ footer {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    if (!ctx) {
-      throw new Error("Canvas is not supported.");
-    }
+    if (!ctx) throw new Error("Canvas unavailable.");
 
     const width = 1000;
     const padding = 58;
@@ -326,7 +332,6 @@ footer {
     const lineHeight = 40;
 
     ctx.font = "bold 27px monospace";
-
     const lines = wrapText(ctx, text, maxTextWidth);
 
     const contentTop = 185;
@@ -373,11 +378,10 @@ footer {
     ctx.fillStyle = "#142a42";
     ctx.fillRect(32, 32, width - 64, 100);
 
-    const colors = ["#ff5b65", "#ffca51", "#55ed8c"];
-    colors.forEach((color, index) => {
+    ["#ff5b65", "#ffca51", "#55ed8c"].forEach((color, i) => {
       ctx.beginPath();
       ctx.fillStyle = color;
-      ctx.arc(60 + index * 26, 62, 7, 0, Math.PI * 2);
+      ctx.arc(60 + i * 26, 62, 7, 0, Math.PI * 2);
       ctx.fill();
     });
 
@@ -391,7 +395,7 @@ footer {
 
     ctx.fillStyle = "#9cb1c5";
     ctx.font = "17px monospace";
-    ctx.fillText("CREATED: " + makeTimestamp(date), padding, 163);
+    ctx.fillText("CREATED: " + timestamp(date), padding, 163);
 
     ctx.fillStyle = "#040a13";
     ctx.fillRect(padding, contentTop, width - padding * 2, contentHeight);
@@ -407,8 +411,12 @@ footer {
     ctx.fillStyle = "#45e5ff";
     ctx.font = "bold 27px monospace";
 
-    lines.forEach((line, index) => {
-      ctx.fillText(line, padding + 22, contentTop + contentPaddingTop + index * lineHeight);
+    lines.forEach((line, i) => {
+      ctx.fillText(
+        line,
+        padding + 22,
+        contentTop + contentPaddingTop + i * lineHeight
+      );
     });
 
     ctx.fillStyle = "#65ffb0";
@@ -422,79 +430,30 @@ footer {
     return canvas;
   }
 
-  function buildFileName() {
-    const now = new Date();
-    return "SecureShell_AccessCard_" +
-      now.getFullYear() +
-      String(now.getMonth() + 1).padStart(2, "0") +
-      String(now.getDate()).padStart(2, "0") + "_" +
-      String(now.getHours()).padStart(2, "0") +
-      String(now.getMinutes()).padStart(2, "0") +
-      String(now.getSeconds()).padStart(2, "0") +
-      ".png";
-  }
-
-  async function saveFileViaPicker(blob, fileName) {
-    if (!("showSaveFilePicker" in window)) {
-      return false;
-    }
-
-    try {
-      const handle = await window.showSaveFilePicker({
-        suggestedName: fileName,
-        types: [{
-          description: "PNG Image",
-          accept: { "image/png": [".png"] }
-        }]
-      });
-
-      const writable = await handle.createWritable();
-      await writable.write(blob);
-      await writable.close();
-      return true;
-    } catch (error) {
-      if (error && error.name === "AbortError") {
-        return true;
-      }
-      throw error;
-    }
-  }
-
   function downloadCanvas(canvas) {
     return new Promise((resolve, reject) => {
-      canvas.toBlob(async blob => {
+      canvas.toBlob(blob => {
         if (!blob) {
           reject(new Error("PNG generation failed."));
           return;
         }
 
-        const fileName = buildFileName();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
 
-        try {
-          const picked = await saveFileViaPicker(blob, fileName);
-          if (picked) {
-            resolve();
-            return;
-          }
+        link.href = url;
+        link.download = fileName();
+        link.style.display = "none";
 
-          const url = URL.createObjectURL(blob);
-          const anchor = document.createElement("a");
-          anchor.href = url;
-          anchor.download = fileName;
-          anchor.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
 
-          document.body.appendChild(anchor);
-          anchor.click();
-          anchor.remove();
-
-          setTimeout(() => {
-            URL.revokeObjectURL(url);
-            resolve();
-          }, 2000);
-        } catch (error) {
-          console.error("Card generation failed:", error);
-          reject(error);
-        }
+        // Release the URL after the browser has started processing it.
+        setTimeout(() => {
+          URL.revokeObjectURL(url);
+          resolve();
+        }, 1000);
       }, "image/png");
     });
   }
@@ -503,7 +462,6 @@ footer {
     event.preventDefault();
 
     const text = input.value.trim();
-
     if (!text) {
       input.focus();
       return;
