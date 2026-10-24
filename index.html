@@ -4,560 +4,262 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#070b14">
-<title>HAFIZ SHAFIQUE, HAMZA SHAFIQUE</title>
-
+<meta name="theme-color" content="#ffffff">
+<title>HAFIZ SHAFIQUE, HAMZA SHAFIQUE — Access Card System</title>
 <style>
-:root {
-  --bg: #070b14;
-  --cyan: #45e5ff;
-  --green: #65ffb0;
-  --muted: #8296ab;
-  --border: #29445c;
+:root{
+  --blue:#4285f4;--red:#ea4335;--yellow:#fbbc05;--green:#34a853;
+  --ink:#202124;--muted:#687386;--line:#e4e8ef;--surface:#fff;
+  --soft:#f7f9fc;--shadow:0 8px 28px rgba(60,90,140,.09);
 }
-
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  padding: 22px 15px;
-  background: radial-gradient(ellipse at top, #102b42, transparent 65%), var(--bg);
-  color: #d9f7ff;
-  font-family: "Courier New", monospace;
-}
-
-.app {
-  max-width: 600px;
-  width: 100%;
-  margin: auto;
-}
-
-header {
-  text-align: center;
-  margin: 16px 0 28px;
-}
-
-h1 {
-  margin: 0;
-  font-size: clamp(23px, 5.5vw, 36px);
-  letter-spacing: 1px;
-  color: var(--cyan);
-  text-shadow: 0 0 18px #45e5ff50;
-  overflow-wrap: anywhere;
-}
-
-.subtitle {
-  color: var(--muted);
-  font-size: 10px;
-  line-height: 1.9;
-  letter-spacing: 1.2px;
-  margin-top: 12px;
-}
-
-.status {
-  display: inline-block;
-  margin-top: 15px;
-  padding: 8px 12px;
-  border: 1px solid #65ffb044;
-  border-radius: 30px;
-  color: var(--green);
-  font-size: 10px;
-}
-
-.panel {
-  background: #0b1422ed;
-  border: 1px solid #45e5ff36;
-  border-radius: 13px;
-  padding: 20px;
-  box-shadow: 0 0 30px #45e5ff09;
-}
-
-.window {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #ffffff15;
-  color: var(--muted);
-  font-size: 10px;
-}
-
-.lights {
-  display: flex;
-  gap: 6px;
-}
-
-.light {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.red { background: #ff5b65; }
-.yellow { background: #ffca51; }
-.green { background: #55ed8c; }
-
-.terminal {
-  margin: 20px 0;
-  color: var(--green);
-  font-size: 12px;
-  line-height: 2;
-}
-
-.section-label {
-  display: block;
-  color: var(--cyan);
-  font-size: 11px;
-  margin: 22px 0 12px;
-  overflow-wrap: anywhere;
-}
-
-.input-wrap {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 5px 12px;
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  background: #050b14;
-}
-
-.prompt {
-  color: var(--green);
-  font-size: 17px;
-}
-
-input {
-  width: 100%;
-  min-width: 0;
-  padding: 15px 0;
-  color: var(--cyan);
-  background: transparent;
-  border: 0;
-  outline: none;
-  font: 14px "Courier New", monospace;
-}
-
-input::placeholder { color: #718398; }
-
-.input-wrap:focus-within {
-  border-color: var(--cyan);
-  box-shadow: 0 0 12px #45e5ff15;
-}
-
-button {
-  width: 100%;
-  margin-top: 16px;
-  padding: 16px 12px;
-  border: 1px solid var(--cyan);
-  border-radius: 8px;
-  background: var(--cyan);
-  color: #04111a;
-  font: bold 12px "Courier New", monospace;
-  letter-spacing: 1px;
-  cursor: pointer;
-}
-
-button:active { background: #91efff; }
-
-button:focus-visible {
-  outline: 2px solid white;
-  outline-offset: 3px;
-}
-
-footer {
-  margin: 25px 0 10px;
-  color: #53677c;
-  text-align: center;
-  font-size: 10px;
-  line-height: 2;
-  overflow-wrap: anywhere;
-}
-
-/* Success screen */
-.success-screen {
-  display: none;
-  text-align: center;
-  padding: 35px 18px;
-  animation: fadeIn 0.45s ease;
-}
-
-.success-screen.show {
-  display: block;
-}
-
-.tick-circle {
-  width: 82px;
-  height: 82px;
-  margin: 0 auto 22px;
-  border: 2px solid var(--green);
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  box-shadow: 0 0 25px #65ffb030;
-}
-
-.tick {
-  width: 25px;
-  height: 42px;
-  border-right: 5px solid var(--green);
-  border-bottom: 5px solid var(--green);
-  transform: rotate(45deg) scale(0);
-  margin-top: -8px;
-  animation: drawTick 0.45s ease 0.2s forwards;
-}
-
-.success-title {
-  color: var(--green);
-  font-size: 19px;
-  line-height: 1.7;
-  overflow-wrap: anywhere;
-}
-
-.success-message {
-  color: #9cb1c5;
-  font-size: 12px;
-  line-height: 1.8;
-  margin-top: 12px;
-}
-
-.success-email {
-  color: var(--cyan);
-  font-size: 12px;
-  margin-top: 30px;
-  overflow-wrap: anywhere;
-}
-
-@keyframes drawTick {
-  to { transform: rotate(45deg) scale(1); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@media (max-width: 360px) {
-  body { padding: 16px 10px; }
-  .panel { padding: 15px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .success-screen, .tick {
-    animation-duration: 0.01ms;
-    animation-delay: 0ms;
-  }
-}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:18px 14px 28px;background:#fff;color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{width:100%;max-width:760px;margin:auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 24px}
+.menu-wrap{position:relative}
+.icon-button{width:46px;height:46px;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 3px 12px #2021240a;display:grid;place-items:center;color:#52627a}
+.hamburger{width:20px;display:grid;gap:5px}
+.hamburger span{height:2px;width:20px;background:currentColor;border-radius:5px}
+.menu{display:none;position:absolute;z-index:5;top:54px;left:0;width:220px;padding:8px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 35px #20212420}
+.menu.open{display:block}
+.menu button{display:flex;align-items:center;gap:10px;width:100%;padding:12px;border:0;border-radius:10px;background:#fff;text-align:left;color:#344054}
+.menu button:hover,.menu button[aria-pressed="true"]{background:#eef4ff;color:#1967d2}
+.menu .menu-heading{padding:8px 12px;color:#7a8494;font-size:11px;text-transform:uppercase;letter-spacing:1px}
+.brand-mark{width:40px;height:40px;border-radius:50%;background:conic-gradient(var(--blue),#a142f4,var(--red),var(--yellow),var(--green),var(--blue));display:grid;place-items:center;color:white;font-weight:bold}
+header{text-align:center;margin:0 0 25px}
+h1{margin:0;font-size:clamp(22px,5.4vw,34px);line-height:1.25;letter-spacing:-.7px;font-weight:800;background:linear-gradient(90deg,var(--blue),#4285f4 28%,var(--red) 55%,var(--yellow) 72%,var(--green));-webkit-background-clip:text;background-clip:text;color:transparent;overflow-wrap:anywhere}
+.subtitle{font-size:11px;letter-spacing:1.5px;color:#7b8493;line-height:1.8;margin-top:10px}
+.status{display:inline-flex;align-items:center;gap:8px;margin-top:13px;padding:8px 13px;border:1px solid #cfe9da;border-radius:30px;color:#16864b;font-size:11px;letter-spacing:.7px}
+.status:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green)}
+.hero{position:relative;overflow:hidden;text-align:center;padding:27px 18px 24px;border:1px solid #e5ebf7;border-radius:18px;background:linear-gradient(135deg,#f5f9ff,#fff 50%,#fff9f5);box-shadow:var(--shadow);margin-bottom:18px}
+.hero:before,.hero:after{content:"";position:absolute;width:145px;height:145px;border-radius:38px;opacity:.13;transform:rotate(35deg);pointer-events:none}
+.hero:before{left:-95px;bottom:-80px;background:var(--green)}
+.hero:after{right:-95px;top:-80px;background:var(--yellow)}
+.hero h2{position:relative;margin:0 0 9px;font-size:clamp(21px,4vw,29px);color:#202b50}
+.hero p{position:relative;margin:0 auto;max-width:490px;color:var(--muted);font-size:14px;line-height:1.65}
+.mode-switch{position:relative;display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:20px}
+.mode-switch button{border:1px solid #dbe4f4;border-radius:30px;padding:12px 18px;background:#fff;color:#34506f;font-weight:700}
+.mode-switch button.active{color:#fff;border-color:transparent;background:linear-gradient(100deg,var(--blue),#8e55ee,#d94ce0);box-shadow:0 5px 14px #4285f42c}
+.panel{background:var(--surface);border:1px solid #e5eaf2;border-radius:17px;padding:20px;box-shadow:var(--shadow);margin-bottom:18px}
+.panel-head{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.color-dots{display:grid;grid-template-columns:repeat(2,8px);gap:4px;padding:5px}
+.color-dots i{width:8px;height:8px;border-radius:50%}
+.color-dots i:nth-child(1){background:var(--blue)}
+.color-dots i:nth-child(2){background:var(--red)}
+.color-dots i:nth-child(3){background:var(--yellow)}
+.color-dots i:nth-child(4){background:var(--green)}
+h3{margin:0;font-size:19px;color:#202b50}
+.help{margin:0 0 18px;color:var(--muted);font-size:13px;line-height:1.6}
+.field-label{display:block;color:#52627a;font-size:12px;font-weight:700;margin:16px 0 8px}
+.input-wrap{display:flex;align-items:center;gap:10px;border:1px solid #d9e0ea;border-radius:12px;padding:0 13px;background:#fbfcff}
+.input-wrap:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px #4285f41b}
+.prompt{font-weight:bold;color:var(--blue)}
+input[type=text]{width:100%;min-width:0;padding:15px 0;border:0;outline:0;background:transparent;color:#25344a;font-size:15px}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.btn{border:1px solid #d9e2ef;border-radius:28px;padding:12px 18px;background:#fff;color:#455a76;font-weight:700}
+.btn.primary{color:#fff;border:0;background:linear-gradient(100deg,var(--blue),#00bcd4,var(--green),var(--yellow),var(--red));box-shadow:0 5px 15px #4285f426}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.pattern-area{display:grid;grid-template-columns:1fr;gap:18px}
+.grid-holder{width:min(100%,340px);aspect-ratio:1;margin:10px auto 0;touch-action:none;user-select:none;-webkit-user-select:none;position:relative}
+#pattern-grid{width:100%;height:100%;display:block;touch-action:none}
+.pattern-note{text-align:center;color:#7b8493;font-size:12px;margin:8px 0 0}
+.info-card{border-radius:14px;padding:16px;background:linear-gradient(110deg,#4285f4,#35b8d5,#34a853,#fbbc05,#ea4335);color:white}
+.info-card strong{display:block;font-size:15px;margin-bottom:5px}
+.info-card span{font-size:12px;line-height:1.6}
+.info-list{display:grid;gap:14px;margin-top:18px}
+.info-row{display:flex;align-items:center;gap:12px}
+.info-icon{flex:0 0 36px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#eef4ff;color:var(--blue);font-weight:bold}
+.info-row strong{display:block;font-size:13px;color:#263452;margin-bottom:3px}
+.info-row small{font-size:12px;color:var(--muted);line-height:1.5}
+.success-screen{display:none;text-align:center;padding:28px 18px;animation:fade .35s ease}
+.success-screen.show{display:block}
+.tick-circle{width:76px;height:76px;margin:0 auto 17px;border-radius:50%;display:grid;place-items:center;background:#e8f7ee;border:2px solid #bce7ca;color:var(--green);font-size:42px;font-weight:400}
+.success-title{color:#16864b;font-size:clamp(17px,4vw,22px);font-weight:800;line-height:1.5}
+.success-message{font-size:13px;line-height:1.7;color:var(--muted);margin:9px auto;max-width:420px}
+.success-email{display:inline-block;margin-top:13px;padding:10px 14px;border-radius:24px;background:#eef4ff;color:#185abc;font-size:13px;overflow-wrap:anywhere}
+.created{margin-top:12px;color:#78859a;font-size:11px}
+footer{text-align:center;color:#7c8798;font-size:11px;line-height:1.9;letter-spacing:.5px;padding:4px 0}
+.footer-line{height:3px;max-width:510px;margin:12px auto 0;border-radius:4px;background:linear-gradient(90deg,var(--blue),#a142f4,var(--red),var(--yellow),var(--green))}
+.hidden{display:none!important}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@media(min-width:650px){.pattern-area{grid-template-columns:1.05fr .95fr;align-items:center}.pattern-left{padding-right:18px;border-right:1px solid var(--line)}.pattern-right{padding-left:2px}.panel{padding:24px}}
+@media(max-width:380px){body{padding:12px 9px 22px}.panel{padding:15px}.hero{padding:23px 13px}.mode-switch button{padding:11px 13px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
-
 <body>
 <main class="app">
+  <div class="topbar">
+    <div class="menu-wrap">
+      <button class="icon-button" id="menu-button" type="button" aria-label="Open menu" aria-expanded="false">
+        <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+      <nav class="menu" id="menu" aria-label="Main menu">
+        <div class="menu-heading">Password type</div>
+        <button type="button" data-mode="text" aria-pressed="true">🔤 &nbsp; Text Password</button>
+        <button type="button" data-mode="pattern" aria-pressed="false">⠿ &nbsp; Pattern Password</button>
+        <button type="button" id="about-button">ⓘ &nbsp; About</button>
+      </nav>
+    </div>
+    <div class="brand-mark" aria-hidden="true">●</div>
+  </div>
 
   <header>
     <h1>HAFIZ SHAFIQUE, HAMZA SHAFIQUE</h1>
-    <div class="subtitle">
-      PERSONAL ACCESS CARD SYSTEM // V5.3
-    </div>
+    <div class="subtitle">PERSONAL ACCESS CARD SYSTEM // V5.3</div>
     <div class="status">SYSTEM ONLINE</div>
   </header>
 
-  <section class="panel" id="main-panel">
-    <div class="window">
-      <div class="lights">
-        <span class="light red"></span>
-        <span class="light yellow"></span>
-        <span class="light green"></span>
-      </div>
-      <span>TERMINAL // READY</span>
+  <section class="hero">
+    <h2>Create Your Access Card</h2>
+    <p>Choose your preferred password type and generate your personal access card.</p>
+    <div class="mode-switch">
+      <button type="button" class="active" data-mode="text">T &nbsp; Text Password</button>
+      <button type="button" data-mode="pattern">⠿ &nbsp; Pattern Password</button>
     </div>
+  </section>
 
-    <div class="terminal">
-      [SYSTEM] Card rendering engine initialized.<br>
-      [READY] Enter text to create your card.
-    </div>
-
-    <form id="card-form">
-      <label class="section-label" for="passkey">
-        // heoxygaming101@gmail.com
-      </label>
-
-      <div class="input-wrap">
-        <span class="prompt">&gt;</span>
-        <input
-          id="passkey"
-          type="text"
-          name="card-content"
-          placeholder="Write your mobile passkey"
-          autocomplete="off"
-          autocapitalize="off"
-          spellcheck="false"
-          maxlength="500"
-          required
-        >
-      </div>
-
-      <button id="generate-button" type="submit">
-        GENERATE CARD
-      </button>
+  <section class="panel" id="text-panel">
+    <div class="panel-head"><span class="color-dots"><i></i><i></i><i></i><i></i></span><h3>Enter Your Text</h3></div>
+    <p class="help">Type the text you want to appear on your access card.</p>
+    <form id="text-form">
+      <label class="field-label" for="card-content">CARD CONTENT</label>
+      <div class="input-wrap"><span class="prompt">&gt;</span><input id="card-content" type="text" maxlength="500" placeholder="Write your text here..." autocomplete="off" required></div>
+      <div class="actions"><button class="btn primary" type="submit" id="text-submit">Generate Text Card ↓</button></div>
     </form>
   </section>
 
-  <section class="panel success-screen" id="success-screen"
-           aria-live="polite">
-    <div class="tick-circle">
-      <div class="tick"></div>
-    </div>
-
-    <div class="success-title">
-      ACCESS CARD GENERATED SUCCESSFULLY
-    </div>
-
-    <div class="success-message">
-      Your PNG card has been generated and the download has been requested.
-    </div>
-
-    <div class="success-email">
-      heoxygaming101@gmail.com
+  <section class="panel hidden" id="pattern-panel">
+    <div class="pattern-area">
+      <div class="pattern-left">
+        <div class="panel-head"><span class="color-dots"><i></i><i></i><i></i><i></i></span><h3>Draw Your Pattern</h3></div>
+        <p class="help">Connect at least 4 dots. Touch and drag across the 3×3 grid.</p>
+        <div class="grid-holder"><canvas id="pattern-grid" aria-label="Android style 3 by 3 pattern grid"></canvas></div>
+        <p class="pattern-note" id="pattern-status" aria-live="polite">No pattern drawn yet.</p>
+        <div class="actions">
+          <button class="btn" id="clear-pattern" type="button">↻ &nbsp; Clear</button>
+          <button class="btn primary" id="save-pattern" type="button">↓ &nbsp; Save Pattern PNG</button>
+        </div>
+      </div>
+      <div class="pattern-right">
+        <div class="info-card"><strong>Pattern Password</strong><span>Your drawn pattern will be saved as a PNG image.</span></div>
+        <div class="info-list">
+          <div class="info-row"><span class="info-icon">⠿</span><div><strong>Android Style</strong><small>Use the standard 3×3 dot grid.</small></div></div>
+          <div class="info-row"><span class="info-icon">✓</span><div><strong>Local Download</strong><small>The PNG is created in your browser and downloaded to your device.</small></div></div>
+          <div class="info-row"><span class="info-icon">▧</span><div><strong>High Quality</strong><small>Clear, colourful pattern card with a timestamp.</small></div></div>
+          <div class="info-row"><span class="info-icon">◷</span><div><strong>Timestamp</strong><small>The card includes its creation date and time.</small></div></div>
+        </div>
+        <p class="help" style="margin:18px 0 0;padding:12px;background:#f7f9fc;border-radius:12px">Tip: a downloaded pattern image is a visual record, not secure authentication. Avoid using a real phone unlock pattern.</p>
+      </div>
     </div>
   </section>
 
-  <footer id="page-footer">
-    HAFIZ SHAFIQUE, HAMZA SHAFIQUE<br>
-    PERSONAL ACCESS CARD SYSTEM
-  </footer>
+  <section class="panel success-screen" id="success-screen" aria-live="polite">
+    <div class="tick-circle">✓</div>
+    <div class="success-title">ACCESS CARD GENERATED SUCCESSFULLY</div>
+    <div class="success-message" id="success-message">Your PNG card has been generated and the download has been requested.</div>
+    <div class="success-email">heoxygaming101@gmail.com</div>
+    <div class="created" id="created-time"></div>
+    <div class="actions"><button type="button" class="btn" id="make-another">Create Another Card</button></div>
+  </section>
 
+  <footer id="page-footer">HAFIZ SHAFIQUE, HAMZA SHAFIQUE<br>PERSONAL ACCESS CARD SYSTEM<div class="footer-line"></div></footer>
 </main>
-
 <script>
 (() => {
   "use strict";
 
-  const form = document.getElementById("card-form");
-  const input = document.getElementById("passkey");
-  const button = document.getElementById("generate-button");
-  const mainPanel = document.getElementById("main-panel");
-  const successScreen = document.getElementById("success-screen");
-  const pageFooter = document.getElementById("page-footer");
+  const $ = id => document.getElementById(id);
+  const menuButton = $("menu-button");
+  const menu = $("menu");
+  const textPanel = $("text-panel");
+  const patternPanel = $("pattern-panel");
+  const successScreen = $("success-screen");
+  const pageFooter = $("page-footer");
+  const grid = $("pattern-grid");
+  const ctx = grid.getContext("2d");
+  const selected = [];
+  const points = [];
+  let drawing = false;
+  let currentMode = "text";
+
+  function setMode(mode) {
+    currentMode = mode;
+    textPanel.classList.toggle("hidden", mode !== "text");
+    patternPanel.classList.toggle("hidden", mode !== "pattern");
+
+    document.querySelectorAll("[data-mode]").forEach(button => {
+      const active = button.dataset.mode === mode;
+      if (button.closest(".menu")) {
+        button.setAttribute("aria-pressed", String(active));
+      } else {
+        button.classList.toggle("active", active);
+      }
+    });
+
+    menu.classList.remove("open");
+    menuButton.setAttribute("aria-expanded", "false");
+
+    if (mode === "pattern") {
+      requestAnimationFrame(resizeGrid);
+    }
+  }
+
+  menuButton.addEventListener("click", () => {
+    const open = menu.classList.toggle("open");
+    menuButton.setAttribute("aria-expanded", String(open));
+  });
+
+  document.querySelectorAll("[data-mode]").forEach(button => {
+    button.addEventListener("click", () => setMode(button.dataset.mode));
+  });
+
+  $("about-button").addEventListener("click", () => {
+    menu.classList.remove("open");
+    menuButton.setAttribute("aria-expanded", "false");
+    alert("Personal Access Card System — create a text or Android-style pattern card and download it as a PNG.");
+  });
+
+  document.addEventListener("click", event => {
+    if (!event.target.closest(".menu-wrap")) {
+      menu.classList.remove("open");
+      menuButton.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  function pad(n) {
+    return String(n).padStart(2, "0");
+  }
 
   function timestamp(date) {
-    const pad = n => String(n).padStart(2, "0");
-
-    return date.getFullYear() + "-" +
-      pad(date.getMonth() + 1) + "-" +
-      pad(date.getDate()) + " " +
-      pad(date.getHours()) + ":" +
-      pad(date.getMinutes()) + ":" +
-      pad(date.getSeconds());
+    return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
   }
 
-  function fileName() {
+  function filename(prefix) {
     const d = new Date();
-    const pad = n => String(n).padStart(2, "0");
-
-    return "AccessCard_" +
-      d.getFullYear() +
-      pad(d.getMonth() + 1) +
-      pad(d.getDate()) + "_" +
-      pad(d.getHours()) +
-      pad(d.getMinutes()) +
-      pad(d.getSeconds()) + ".png";
+    return `${prefix}_${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}.png`;
   }
 
-  function wrapText(ctx, text, maxWidth) {
-    const lines = [];
-
-    for (const paragraph of text.split(/\r?\n/)) {
-      if (!paragraph) {
-        lines.push("");
-        continue;
-      }
-
-      let line = "";
-
-      for (const word of paragraph.split(/\s+/)) {
-        let remaining = word;
-
-        while (ctx.measureText(remaining).width > maxWidth) {
-          let part = "";
-
-          for (const ch of remaining) {
-            if (ctx.measureText(part + ch).width > maxWidth) break;
-            part += ch;
-          }
-
-          if (!part) break;
-
-          if (line) {
-            lines.push(line);
-            line = "";
-          }
-
-          lines.push(part);
-          remaining = remaining.slice(part.length);
-        }
-
-        if (!remaining) continue;
-
-        const candidate = line ? line + " " + remaining : remaining;
-
-        if (ctx.measureText(candidate).width > maxWidth && line) {
-          lines.push(line);
-          line = remaining;
-        } else {
-          line = candidate;
-        }
-      }
-
-      if (line) lines.push(line);
-    }
-
-    return lines;
+  function roundedRect(c, x, y, w, h, r) {
+    c.beginPath();
+    c.roundRect(x, y, w, h, r);
   }
 
-  function createCard(text, date) {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-
-    if (!ctx) throw new Error("Canvas unavailable.");
-
-    const width = 1000;
-    const padding = 58;
-    const maxTextWidth = width - padding * 2 - 42;
-    const lineHeight = 40;
-
-    ctx.font = "bold 27px monospace";
-    const lines = wrapText(ctx, text, maxTextWidth);
-
-    const contentTop = 185;
-    const contentPaddingTop = 76;
-    const contentHeight = Math.max(
-      180,
-      contentPaddingTop + lines.length * lineHeight + 30
-    );
-
-    canvas.width = width;
-    canvas.height = contentTop + contentHeight + 100;
-
-    const height = canvas.height;
-    const gradient = ctx.createLinearGradient(0, 0, width, height);
-    gradient.addColorStop(0, "#10243b");
-    gradient.addColorStop(1, "#030811");
-
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, width, height);
-
-    ctx.strokeStyle = "#45e5ff0b";
-    ctx.lineWidth = 1;
-
-    for (let x = 0; x < width; x += 35) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
-      ctx.stroke();
-    }
-
-    for (let y = 0; y < height; y += 35) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(width, y);
-      ctx.stroke();
-    }
-
-    ctx.strokeStyle = "#45e5ff";
-    ctx.lineWidth = 3;
-    ctx.strokeRect(18, 18, width - 36, height - 36);
-
-    ctx.fillStyle = "#142a42";
-    ctx.fillRect(32, 32, width - 64, 100);
-
-    ["#ff5b65", "#ffca51", "#55ed8c"].forEach((color, i) => {
-      ctx.beginPath();
-      ctx.fillStyle = color;
-      ctx.arc(60 + i * 26, 62, 7, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    ctx.fillStyle = "#45e5ff";
-    ctx.font = "bold 26px monospace";
-    ctx.fillText(
-      "HAFIZ SHAFIQUE, HAMZA SHAFIQUE",
-      155, 70, 800
-    );
-
-    ctx.fillStyle = "#9cb1c5";
-    ctx.font = "16px monospace";
-    ctx.fillText("PERSONAL ACCESS RECORD", 155, 100);
-
-    ctx.fillStyle = "#9cb1c5";
-    ctx.font = "17px monospace";
-    ctx.fillText("CREATED: " + timestamp(date), padding, 163);
-
-    ctx.fillStyle = "#040a13";
-    ctx.fillRect(
-      padding, contentTop,
-      width - padding * 2, contentHeight
-    );
-
-    ctx.strokeStyle = "#28455c";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(
-      padding, contentTop,
-      width - padding * 2, contentHeight
-    );
-
-    ctx.fillStyle = "#7e95ab";
-    ctx.font = "16px monospace";
-    ctx.fillText(
-      "heoxygaming101@gmail.com",
-      padding + 22, contentTop + 35
-    );
-
-    ctx.fillStyle = "#45e5ff";
-    ctx.font = "bold 27px monospace";
-
-    lines.forEach((line, i) => {
-      ctx.fillText(
-        line,
-        padding + 22,
-        contentTop + contentPaddingTop + i * lineHeight
-      );
-    });
-
-    ctx.fillStyle = "#65ffb0";
-    ctx.font = "16px monospace";
-    ctx.fillText(
-      "HAFIZ SHAFIQUE, HAMZA SHAFIQUE",
-      padding, height - 64
-    );
-
-    ctx.fillStyle = "#8ba0b5";
-    ctx.font = "13px monospace";
-    ctx.fillText(
-      "PERSONAL ACCESS CARD",
-      padding, height - 40
-    );
-
-    return canvas;
-  }
-
-  function downloadCanvas(canvas) {
+  function downloadCanvas(canvas, name) {
     return new Promise((resolve, reject) => {
       canvas.toBlob(blob => {
         if (!blob) {
-          reject(new Error("PNG generation failed."));
+          reject(new Error("PNG creation failed"));
           return;
         }
 
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
-
         link.href = url;
-        link.download = fileName();
+        link.download = name;
         link.style.display = "none";
-
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -565,42 +267,160 @@ footer {
         setTimeout(() => {
           URL.revokeObjectURL(url);
           resolve();
-        }, 1000);
+        }, 1200);
       }, "image/png");
     });
   }
 
-  form.addEventListener("submit", async event => {
+  function drawTextCard(text, date) {
+    const canvas = document.createElement("canvas");
+    const c = canvas.getContext("2d");
+    const width = 1200;
+    const padX = 75;
+    const maxW = width - padX * 2;
+
+    c.font = "bold 34px Arial";
+    const words = text.split(/\s+/);
+    const lines = [];
+    let line = "";
+
+    words.forEach(word => {
+      const candidate = line ? line + " " + word : word;
+      if (c.measureText(candidate).width > maxW && line) {
+        lines.push(line);
+        line = word;
+      } else {
+        line = candidate;
+      }
+    });
+
+    if (line) lines.push(line);
+
+    const lineHeight = 52;
+    const cardTop = 230;
+    const cardHeight = Math.max(220, 110 + lines.length * lineHeight);
+    canvas.width = width;
+    canvas.height = cardTop + cardHeight + 110;
+
+    const g = c.createLinearGradient(0, 0, width, canvas.height);
+    g.addColorStop(0, "#f4f8ff");
+    g.addColorStop(.55, "#ffffff");
+    g.addColorStop(1, "#fff8f5");
+    c.fillStyle = g;
+    c.fillRect(0, 0, width, canvas.height);
+
+    c.strokeStyle = "#4285f4";
+    c.lineWidth = 5;
+    roundedRect(c, 18, 18, width - 36, canvas.height - 36, 32);
+    c.stroke();
+
+    const rainbow = c.createLinearGradient(0, 0, width, 0);
+    rainbow.addColorStop(0, "#4285f4");
+    rainbow.addColorStop(.25, "#34a853");
+    rainbow.addColorStop(.5, "#fbbc05");
+    rainbow.addColorStop(.75, "#ea4335");
+    rainbow.addColorStop(1, "#a142f4");
+
+    c.fillStyle = rainbow;
+    roundedRect(c, 42, 42, width - 84, 120, 22);
+    c.fill();
+
+    c.fillStyle = "#fff";
+    c.font = "bold 34px Arial";
+    c.fillText("HAFIZ SHAFIQUE, HAMZA SHAFIQUE", 78, 94, 1030);
+    c.font = "20px Arial";
+    c.fillText("PERSONAL ACCESS RECORD", 78, 130);
+
+    c.fillStyle = "#58677b";
+    c.font = "20px Arial";
+    c.fillText("CREATED: " + timestamp(date), padX, 195);
+
+    c.fillStyle = "#fff";
+    roundedRect(c, padX, cardTop, width - padX * 2, cardHeight, 24);
+    c.fill();
+
+    c.strokeStyle = "#dce5f3";
+    c.lineWidth = 3;
+    roundedRect(c, padX, cardTop, width - padX * 2, cardHeight, 24);
+    c.stroke();
+
+    c.fillStyle = "#687386";
+    c.font = "20px Arial";
+    c.fillText("heoxygaming101@gmail.com", padX + 30, cardTop + 48);
+
+    c.fillStyle = "#202124";
+    c.font = "bold 34px Arial";
+    lines.forEach((txt, i) => {
+      c.fillText(txt, padX + 30, cardTop + 112 + i * lineHeight, maxW - 60);
+    });
+
+    c.fillStyle = "#4285f4";
+    c.font = "bold 22px Arial";
+    c.fillText("PERSONAL ACCESS CARD", padX, canvas.height - 55);
+
+    return canvas;
+  }
+
+  $("text-form").addEventListener("submit", async event => {
     event.preventDefault();
+    const text = $("card-content").value.trim();
+    if (!text) return;
 
-    const text = input.value.trim();
-
-    if (!text) {
-      input.focus();
-      return;
-    }
-
+    const button = $("text-submit");
     button.disabled = true;
-    button.textContent = "GENERATING...";
+    button.textContent = "Generating…";
 
     try {
-      const canvas = createCard(text, new Date());
-      await downloadCanvas(canvas);
-
-      mainPanel.style.display = "none";
-      pageFooter.style.display = "none";
-      successScreen.classList.add("show");
-
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } catch (error) {
-      console.error("Card generation failed:", error);
+      const date = new Date();
+      await downloadCanvas(drawTextCard(text, date), filename("AccessCard"));
+      showSuccess("Your text card PNG has been generated and the download has been requested.", date);
+    } catch (err) {
+      console.error(err);
       alert("Unable to generate the card. Please try again.");
-
+    } finally {
       button.disabled = false;
-      button.textContent = "GENERATE CARD";
+      button.textContent = "Generate Text Card ↓";
     }
   });
-})();
-</script>
-</body>
-</html>
+
+  function resizeGrid() {
+    const rect = grid.getBoundingClientRect();
+    if (!rect.width) return;
+
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    grid.width = Math.round(rect.width * dpr);
+    grid.height = Math.round(rect.height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    drawGrid();
+  }
+
+  function getGeometry() {
+    const w = grid.clientWidth;
+    const h = grid.clientHeight;
+    const pad = Math.min(w, h) * .18;
+    const stepX = (w - pad * 2) / 2;
+    const stepY = (h - pad * 2) / 2;
+
+    points.length = 0;
+    for (let r = 0; r < 3; r++) {
+      for (let col = 0; col < 3; col++) {
+        points.push({
+          x: pad + col * stepX,
+          y: pad + r * stepY,
+          index: r * 3 + col
+        });
+      }
+    }
+    return { w, h };
+  }
+
+  function drawGrid() {
+    if (!grid.clientWidth) return;
+
+    const { w, h } = getGeometry();
+    ctx.clearRect(0, 0, w, h);
+    const selectedSet = new Set(selected);
+
+    if (selected.length > 1) {
+      ctx.beginPath();
+      selected.for
