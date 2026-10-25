@@ -4,818 +4,816 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#ffffff">
-<title>Access Card System</title>
+<meta name="theme-color" content="#000000">
+<title>Password Generator</title>
 
 <style>
 :root {
-  --blue: #4285f4;
-  --purple: #8855ee;
-  --ink: #202124;
-  --muted: #687386;
-  --line: #e4e8ef;
-  --surface: rgba(255,255,255,.92);
+  color-scheme: dark;
+  --bg: #000;
+  --panel: #101010;
+  --surface: #1b1b1b;
+  --text: #f1f3f4;
+  --muted: #a0a0a0;
+  --border: #333;
+  --accent: #e8eaed;
+  --danger: #ff8a80;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  padding: 16px 12px 32px;
-  min-height: 100vh;
-  color: var(--ink);
+  background: var(--bg);
+  color: var(--text);
   font-family: Arial, Helvetica, sans-serif;
-  background:
-    radial-gradient(ellipse at top left, #e9f0ff 0, transparent 45%),
-    radial-gradient(ellipse at bottom right, #f1e8ff 0, transparent 45%),
-    #f7f8fc;
 }
 
-button, input, textarea { font: inherit; }
-
-button {
-  border: 0;
-  cursor: pointer;
-  transition: transform .15s, opacity .15s;
-}
-
-button:active { transform: scale(.98); }
+button, input { font: inherit; }
+button { cursor: pointer; }
 button:disabled { opacity: .5; cursor: not-allowed; }
 
-.app {
-  max-width: 1000px;
-  margin: auto;
+button:focus-visible, input:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 3px;
 }
 
-.topbar {
+.app {
+  width: min(850px, 100%);
+  margin: auto;
+  padding: 16px;
+}
+
+header {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 32px;
 }
 
-.menu-button {
-  width: 48px;
-  height: 48px;
-  flex-shrink: 0;
-  border-radius: 15px;
-  color: #fff;
-  font-size: 25px;
-  background: linear-gradient(135deg, var(--blue), var(--purple));
-  box-shadow: 0 6px 18px #7959e533;
+#menuButton {
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 50%;
+  color: white;
+  background: transparent;
+  font-size: 27px;
 }
 
-.brand h1 {
-  margin: 0;
-  font-size: clamp(20px, 5vw, 29px);
-  letter-spacing: -.7px;
+#menuButton:hover, .menu button:hover {
+  background: #202124;
 }
 
-.brand p {
-  margin: 5px 0 0;
+.brand {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.brand small {
   color: var(--muted);
-  font-size: 13px;
+  font-weight: 400;
+}
+
+.menu {
+  display: none;
+  padding: 8px;
+  margin: -20px 0 25px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: var(--panel);
+}
+
+.menu.open { display: block; }
+
+.menu button {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  border: 0;
+  border-radius: 9px;
+  text-align: left;
+  color: var(--text);
+  background: transparent;
+}
+
+.hero {
+  margin: 35px 0;
+  text-align: center;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(34px, 8vw, 53px);
+  font-weight: 400;
+  letter-spacing: -1.5px;
+}
+
+.hero p, .description {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.65;
 }
 
 .panel {
-  padding: 20px;
-  margin-bottom: 16px;
-  border: 1px solid #ffffff;
-  border-radius: 23px;
-  background: var(--surface);
-  box-shadow: 0 12px 35px #283b6010;
+  padding: 22px;
+  margin-bottom: 18px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--bg);
 }
 
 h2 {
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   font-size: 21px;
 }
 
-.description {
-  margin: 0 0 18px;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.55;
-}
-
-.field-label {
+label {
   display: block;
-  margin: 14px 0 7px;
-  font-weight: 700;
+  margin: 17px 0 8px;
   font-size: 13px;
 }
 
 input[type="text"],
 input[type="password"],
-textarea {
+input[type="number"],
+input[type="file"] {
   width: 100%;
-  padding: 13px 14px;
-  color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: 13px;
-  outline: none;
-  background: #fff;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  color: var(--text);
+  background: #090909;
 }
 
-input:focus, textarea:focus {
-  border-color: var(--purple);
-  box-shadow: 0 0 0 3px #8855ee18;
-}
-
-textarea {
-  resize: vertical;
-  min-height: 90px;
-}
+input:focus { border-color: #aaa; }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 15px;
+  margin-top: 14px;
 }
 
-.primary, .secondary, .danger {
+.btn {
   padding: 12px 16px;
-  border-radius: 12px;
+  border: 1px solid #444;
+  border-radius: 24px;
+  color: var(--text);
+  background: var(--surface);
+}
+
+.btn.primary {
+  color: #111;
+  background: #f1f3f4;
+  border-color: #f1f3f4;
   font-weight: 700;
+}
+
+.btn.danger { color: var(--danger); }
+
+.btn.full { width: 100%; margin-top: 14px; }
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 13px;
+  color: var(--muted);
   font-size: 14px;
 }
 
-.primary {
-  color: white;
-  background: linear-gradient(135deg, var(--blue), var(--purple));
+.checkbox input {
+  width: 17px;
+  height: 17px;
 }
 
-.secondary {
-  color: #433c61;
-  background: #f0edfa;
+.output {
+  margin-top: 18px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #090909;
 }
 
-.danger {
-  color: #b42332;
-  background: #fff0f1;
+#passwordOutput {
+  font-family: monospace;
+  font-size: 18px;
+  overflow-wrap: anywhere;
 }
 
 .status {
-  min-height: 20px;
+  min-height: 18px;
   margin-top: 12px;
   color: var(--muted);
   font-size: 13px;
   overflow-wrap: anywhere;
 }
 
-.status.error { color: #c62838; }
-.status.success { color: #16834a; }
+.status.error { color: var(--danger); }
+.status.success { color: #a5d6a7; }
 
-.preview-wrap {
+.hidden { display: none !important; }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
   display: none;
-  margin-top: 16px;
-  text-align: center;
-}
-
-.preview-wrap img {
-  display: block;
-  max-width: 100%;
-  max-height: 420px;
-  margin: auto;
-  border-radius: 14px;
-  object-fit: contain;
-  background: #f1f2f7;
-}
-
-.menu {
-  display: none;
-  padding: 10px;
-  margin: -8px 0 18px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: white;
-  box-shadow: 0 12px 30px #283b6015;
-}
-
-.menu.open { display: block; }
-
-.menu button {
-  width: 100%;
-  padding: 14px;
-  margin: 2px 0;
-  border-radius: 11px;
-  text-align: left;
-  color: var(--ink);
-  background: transparent;
-}
-
-.menu button:hover { background: #f3efff; }
-
-.gallery-head {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 16px;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 16px;
+  background: #000;
 }
 
-.gallery-head h2 { margin: 0; }
+.overlay.open { display: flex; }
 
-.count {
-  padding: 7px 10px;
-  color: #5f48a5;
-  background: #f0eaff;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 700;
+.dialog {
+  width: 100%;
+  max-width: 430px;
+  max-height: 94vh;
+  overflow-y: auto;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #0b0b0b;
 }
+
+.dialog.wide { max-width: 700px; }
+
+.dialog h2 { margin-bottom: 10px; }
 
 .gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
-  gap: 13px;
+  grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+  gap: 12px;
+  margin-top: 18px;
 }
 
-.image-card {
+.picture {
   min-width: 0;
-  padding: 9px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: #fff;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
 }
 
-.image-card img {
-  width: 100%;
-  height: 160px;
+.picture img {
   display: block;
+  width: 100%;
+  height: 145px;
   object-fit: cover;
-  border-radius: 10px;
-  background: #f1f2f7;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-.image-name {
-  margin: 10px 0 8px;
+.picture-name {
+  margin: 9px 0;
   font-size: 12px;
-  font-weight: 700;
   overflow-wrap: anywhere;
 }
 
-.image-date {
-  margin-bottom: 9px;
-  color: var(--muted);
-  font-size: 11px;
-}
-
-.image-card .danger {
+.picture .btn {
   width: 100%;
-  padding: 9px 7px;
+  padding: 9px;
   font-size: 12px;
 }
 
 .empty {
   grid-column: 1 / -1;
-  padding: 30px 14px;
-  border: 1px dashed #d7d9e4;
-  border-radius: 15px;
+  padding: 24px 12px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
   color: var(--muted);
   text-align: center;
   line-height: 1.6;
 }
 
-.lock-screen {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-  overflow-y: auto;
-  padding: 20px;
-  align-items: center;
-  justify-content: center;
-  background: #f5f4fbf5;
-  backdrop-filter: blur(12px);
+.pattern-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: min(280px, 100%);
+  aspect-ratio: 1;
+  margin: 20px auto;
+  touch-action: none;
+  user-select: none;
 }
 
-.lock-screen.open { display: flex; }
-
-.lock-box {
-  width: 100%;
-  max-width: 410px;
-  padding: 25px;
-  border: 1px solid #fff;
-  border-radius: 25px;
-  background: #fff;
-  box-shadow: 0 20px 70px #25204420;
-}
-
-.lock-icon {
-  width: 64px;
-  height: 64px;
+.dot-cell {
   display: grid;
   place-items: center;
-  margin-bottom: 17px;
-  border-radius: 20px;
-  color: #fff;
-  font-size: 30px;
-  background: linear-gradient(135deg, var(--blue), var(--purple));
+  padding: 0;
+  border: 0;
+  background: transparent;
+  touch-action: none;
 }
 
-.lock-box h2 { font-size: 25px; }
-.lock-box .primary { width: 100%; margin-top: 15px; }
+.dot {
+  width: 19px;
+  height: 19px;
+  border: 2px solid #aaa;
+  border-radius: 50%;
+  background: #222;
+  pointer-events: none;
+}
+
+.dot-cell.selected .dot {
+  border-color: white;
+  background: white;
+  box-shadow: 0 0 0 7px #ffffff18;
+}
 
 footer {
-  padding: 12px 5px;
-  color: var(--muted);
+  padding: 18px 0;
+  color: #777;
   font-size: 12px;
-  line-height: 1.6;
+  line-height: 1.7;
   text-align: center;
 }
 
-.hidden { display: none !important; }
-
-@media (max-width: 480px) {
-  .panel { padding: 16px; border-radius: 19px; }
+@media(max-width:480px) {
+  .app { padding: 12px; }
+  .panel { padding: 16px; }
+  .dialog { padding: 18px; }
   .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .image-card img { height: 145px; }
-  .actions > button { flex: 1 1 auto; }
 }
 </style>
 </head>
 
 <body>
 <div class="app">
-
-  <header class="topbar">
-    <button class="menu-button" id="menuButton"
-      aria-label="Open menu" aria-expanded="false">☰</button>
-    <div class="brand">
-      <h1>Access Card System</h1>
-      <p>Your personal image workspace</p>
-    </div>
+  <header>
+    <button id="menuButton" aria-label="Open menu"
+      aria-expanded="false">☰</button>
+    <div class="brand">Password Generator <small>· Tools</small></div>
   </header>
 
-  <nav class="menu" id="menu">
-    <button id="openGalleryButton">🔐 &nbsp; Saved Passkeys</button>
-    <button id="closeMenuButton">✕ &nbsp; Close Menu</button>
+  <nav id="menu" class="menu">
+    <button id="menuVault">🔒 &nbsp; Saved Pictures Vault</button>
+    <button id="menuPattern">⠿ &nbsp; 3×3 Pattern Lock</button>
+    <button id="menuClose">✕ &nbsp; Close Menu</button>
   </nav>
 
-  <section class="panel">
-    <h2>Create an Access Card</h2>
-    <p class="description">
-      Create a simple image card from your own text or choose a picture
-      from your device. Save the resulting image in this browser's gallery.
-    </p>
+  <section class="hero">
+    <h1>Password Generator</h1>
+    <p>Generate strong passwords. Change them whenever you need.</p>
+  </section>
 
-    <label class="field-label" for="cardTitle">Card title</label>
-    <input id="cardTitle" type="text" maxlength="100"
-      placeholder="Enter a title">
+  <main>
+    <section class="panel">
+      <h2>Change Password</h2>
+      <p class="description">
+        Enter a label or text describing the password, choose your
+        settings, then generate and copy a new password.
+      </p>
 
-    <label class="field-label" for="cardText">Card text</label>
-    <textarea id="cardText" maxlength="1500"
-      placeholder="Write something for your card..."></textarea>
+      <label for="passwordLabel">Password-related text / label</label>
+      <input id="passwordLabel" type="text" maxlength="100"
+        placeholder="Example: My account password">
 
-    <div class="actions">
-      <button class="primary" id="createCardButton">Create Text Card</button>
-    </div>
+      <label for="passwordLength">Password length (8–64)</label>
+      <input id="passwordLength" type="number" min="8" max="64" value="18">
 
-    <label class="field-label" for="imageInput">Or choose a picture</label>
-    <input id="imageInput" type="file" accept="image/*">
-
-    <div class="preview-wrap" id="previewWrap">
-      <img id="previewImage" alt="Image preview">
-      <div class="actions">
-        <button class="primary" id="saveImageButton">Save Picture</button>
+      <div class="checkbox">
+        <input type="checkbox" id="upper" checked>
+        <label for="upper" style="margin:0">Uppercase letters</label>
       </div>
-    </div>
+      <div class="checkbox">
+        <input type="checkbox" id="lower" checked>
+        <label for="lower" style="margin:0">Lowercase letters</label>
+      </div>
+      <div class="checkbox">
+        <input type="checkbox" id="numbers" checked>
+        <label for="numbers" style="margin:0">Numbers</label>
+      </div>
+      <div class="checkbox">
+        <input type="checkbox" id="symbols" checked>
+        <label for="symbols" style="margin:0">Symbols</label>
+      </div>
 
-    <div class="status" id="mainStatus" role="status"></div>
-  </section>
+      <button class="btn primary full" id="generate">Generate New Password</button>
 
-  <section class="panel" id="galleryPanel">
-    <div class="gallery-head">
-      <h2>My Saved Pictures</h2>
-      <span class="count" id="imageCount">0 pictures</span>
-    </div>
+      <div class="output">
+        <div class="description" id="outputLabel">Your password will appear here.</div>
+        <input id="passwordOutput" type="text" readonly
+          placeholder="Generated password">
+        <div class="actions">
+          <button class="btn" id="copy">Copy Password</button>
+          <button class="btn" id="again">Generate Again</button>
+        </div>
+      </div>
 
-    <p class="description">
-      Pictures are stored privately in this browser on this device.
-      They are not automatically shared with other devices.
-    </p>
+      <div class="status" id="generatorStatus"></div>
+    </section>
 
-    <div class="gallery" id="gallery">
-      <div class="empty">Your saved pictures will appear here.</div>
-    </div>
-
-    <div class="actions">
-      <button class="danger" id="deleteAllButton">Delete All Pictures</button>
-    </div>
-    <div class="status" id="galleryStatus" role="status"></div>
-  </section>
+    <section class="panel">
+      <h2>Saved Pictures</h2>
+      <p class="description">
+        Open the protected vault through the three-line menu.
+        Your pictures are stored separately in this browser on this device.
+      </p>
+      <button class="btn" id="openVault">🔒 Open Picture Vault</button>
+      <div class="status" id="storageStatus"></div>
+    </section>
+  </main>
 
   <footer>
-    Local gallery storage · Works in modern browsers<br>
-    Clearing this site's browser data may erase saved pictures.
+    Minimal black interface · Local picture storage<br>
+    A public HTML file cannot provide strong authentication by itself.
   </footer>
 </div>
 
-<div class="lock-screen" id="lockScreen" role="dialog"
-  aria-modal="true" aria-labelledby="lockTitle">
-  <div class="lock-box">
-    <div class="lock-icon">🔐</div>
-    <h2 id="lockTitle">Saved Passkeys</h2>
-    <p class="description">
-      Enter one of your approved passkeys to open the saved picture gallery.
+<!-- Password gate for the picture vault -->
+<div class="overlay" id="vaultLogin">
+  <section class="dialog">
+    <h2>Saved Pictures Vault</h2>
+    <p class="description">Enter your vault password to continue.</p>
+    <form id="vaultForm">
+      <label for="vaultPassword">Vault password</label>
+      <input id="vaultPassword" type="password" required
+        autocomplete="current-password">
+      <button class="btn primary full" type="submit">Unlock Vault</button>
+    </form>
+    <div class="status" id="vaultLoginStatus"></div>
+    <button class="btn full" id="cancelLogin">Cancel</button>
+  </section>
+</div>
+
+<!-- 3 x 3 pattern screen -->
+<div class="overlay" id="patternOverlay">
+  <section class="dialog">
+    <h2 id="patternHeading">3×3 Pattern Lock</h2>
+    <p class="description" id="patternDescription">
+      Draw a pattern across at least four dots.
     </p>
 
-    <form id="unlockForm">
-      <label class="field-label" for="passkeyInput">Passkey</label>
-      <input id="passkeyInput" type="password"
-        autocomplete="current-password" placeholder="Enter passkey" required>
-      <button class="primary" type="submit">Unlock Gallery</button>
-    </form>
-
-    <div class="status" id="lockStatus" role="status"></div>
-    <div class="actions">
-      <button class="secondary" id="cancelUnlockButton">Cancel</button>
+    <div class="pattern-grid" id="patternGrid">
+      <button class="dot-cell" data-dot="0" aria-label="Dot 1"><span class="dot"></span></button>
+      <button class="dot-cell" data-dot="1" aria-label="Dot 2"><span class="dot"></span></button>
+      <button class="dot-cell" data-dot="2" aria-label="Dot 3"><span class="dot"></span></button>
+      <button class="dot-cell" data-dot="3" aria-label="Dot 4"><span class="dot"></span></button>
+      <button class="dot-cell" data-dot="4" aria-label="Dot 5"><span class="dot"></span></button>
+      <button class="dot-cell" data-dot="5" aria-label="Dot 6"><span class="dot"></span></button>
+      <button class="dot-cell" data-dot="6" aria-label="Dot 7"><span class="dot"></span></button>
+      <button class="dot-cell" data-dot="7" aria-label="Dot 8"><span class="dot"></span></button>
+      <button class="dot-cell" data-dot="8" aria-label="Dot 9"><span class="dot"></span></button>
     </div>
-  </div>
+
+    <div class="status" id="patternStatus">Draw at least four dots.</div>
+    <button class="btn full" id="clearPattern">Clear Pattern</button>
+    <button class="btn full" id="resetPattern">Reset Saved Pattern</button>
+    <button class="btn full" id="closePattern">Close</button>
+  </section>
+</div>
+
+<!-- Picture vault -->
+<div class="overlay" id="vaultOverlay">
+  <section class="dialog wide">
+    <h2>My Saved Pictures</h2>
+    <p class="description">
+      Choose a picture and save it in this browser. Saved pictures
+      remain after reopening the site unless browser data is cleared.
+    </p>
+
+    <label for="pictureFile">Choose picture</label>
+    <input type="file" id="pictureFile" accept="image/*">
+
+    <label for="pictureName">Picture name (optional)</label>
+    <input type="text" id="pictureName" maxlength="100"
+      placeholder="Enter picture name">
+
+    <button class="btn primary full" id="savePicture">Save Picture</button>
+    <div class="status" id="pictureStatus"></div>
+
+    <div class="actions">
+      <button class="btn" id="refreshGallery">Refresh</button>
+      <button class="btn danger" id="deleteAll">Delete All Pictures</button>
+    </div>
+
+    <div class="gallery" id="pictureGallery"></div>
+    <button class="btn full" id="closeVaultOverlay">Close Vault</button>
+  </section>
 </div>
 
 <script>
 "use strict";
 
-/*
-  IMPORTANT:
-  These passkeys are checked in browser-side JavaScript.
-  They are a casual access screen, NOT strong security.
-  Anyone who can inspect this public HTML can discover them.
-*/
-
-const APPROVED_PASSKEYS = [
-  "TNUSHAI",
-  "tnushai",
-  "inshal",
-  "Inshii",
-  "king",
-  "queen",
-  "190"
+/* CONFIGURATION */
+const VAULT_PASSWORDS = [
+  "umer", "inshal", "TNUSHAI", "tnushai", "Inshii"
 ];
 
-const DB_NAME = "AccessCardSavedGallery_v2";
-const STORE_NAME = "images";
+const DB_NAME = "PasswordGeneratorVaultFixed";
+const STORE_NAME = "pictures";
+const PATTERN_KEY = "passwordGeneratorPatternFixed";
 
-const menuButton = document.getElementById("menuButton");
-const menu = document.getElementById("menu");
-const openGalleryButton = document.getElementById("openGalleryButton");
-const closeMenuButton = document.getElementById("closeMenuButton");
-const lockScreen = document.getElementById("lockScreen");
-const unlockForm = document.getElementById("unlockForm");
-const passkeyInput = document.getElementById("passkeyInput");
-const lockStatus = document.getElementById("lockStatus");
-const cancelUnlockButton = document.getElementById("cancelUnlockButton");
-const cardTitle = document.getElementById("cardTitle");
-const cardText = document.getElementById("cardText");
-const createCardButton = document.getElementById("createCardButton");
-const imageInput = document.getElementById("imageInput");
-const previewWrap = document.getElementById("previewWrap");
-const previewImage = document.getElementById("previewImage");
-const saveImageButton = document.getElementById("saveImageButton");
-const mainStatus = document.getElementById("mainStatus");
-const gallery = document.getElementById("gallery");
-const imageCount = document.getElementById("imageCount");
-const galleryStatus = document.getElementById("galleryStatus");
-const deleteAllButton = document.getElementById("deleteAllButton");
+const $ = id => document.getElementById(id);
 
-let selectedImageBlob = null;
-let selectedImageName = "";
-let database = null;
-let galleryUnlocked = false;
-let temporaryPreviewUrl = null;
+let db = null;
+let selectedFile = null;
+let drawing = false;
+let currentPattern = [];
+let pendingPattern = null;
+let blobUrls = [];
 
-function setStatus(element, message, type = "") {
+/* STATUS */
+function showStatus(id, message, type = "") {
+  const element = $(id);
   element.textContent = message;
   element.className = "status" + (type ? " " + type : "");
 }
 
+/* PASSWORD GENERATOR */
+function secureRandomIndex(max) {
+  const limit = Math.floor(4294967296 / max) * max;
+  const values = new Uint32Array(1);
+
+  do {
+    crypto.getRandomValues(values);
+  } while (values[0] >= limit);
+
+  return values[0] % max;
+}
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = secureRandomIndex(i + 1);
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function generatePassword() {
+  const length = Number($("passwordLength").value);
+
+  if (!Number.isInteger(length) || length < 8 || length > 64) {
+    showStatus("generatorStatus", "Choose a length from 8 to 64.", "error");
+    return;
+  }
+
+  const groups = [];
+
+  if ($("upper").checked) groups.push("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  if ($("lower").checked) groups.push("abcdefghijklmnopqrstuvwxyz");
+  if ($("numbers").checked) groups.push("0123456789");
+  if ($("symbols").checked) groups.push("!@#$%^&*()-_=+[]{};:,.?");
+
+  if (groups.length === 0) {
+    showStatus("generatorStatus", "Select at least one character type.", "error");
+    return;
+  }
+
+  if (length < groups.length) {
+    showStatus("generatorStatus", "Increase the length to fit all selected types.", "error");
+    return;
+  }
+
+  const all = groups.join("");
+  const chars = groups.map(group => group[secureRandomIndex(group.length)]);
+
+  while (chars.length < length) {
+    chars.push(all[secureRandomIndex(all.length)]);
+  }
+
+  $("passwordOutput").value = shuffle(chars).join("");
+
+  const label = $("passwordLabel").value.trim();
+  $("outputLabel").textContent = label
+    ? "Password label: " + label
+    : "Your generated password";
+
+  showStatus("generatorStatus", "Password generated successfully.", "success");
+}
+
+$("generate").addEventListener("click", generatePassword);
+$("again").addEventListener("click", generatePassword);
+
+$("copy").addEventListener("click", async () => {
+  const value = $("passwordOutput").value;
+
+  if (!value) {
+    showStatus("generatorStatus", "Generate a password first.", "error");
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(value);
+    showStatus("generatorStatus", "Password copied.", "success");
+  } catch {
+    $("passwordOutput").focus();
+    $("passwordOutput").select();
+
+    try {
+      const success = document.execCommand("copy");
+      showStatus("generatorStatus",
+        success ? "Password copied." : "Copy manually using Select and Copy.",
+        success ? "success" : "error");
+    } catch {
+      showStatus("generatorStatus", "Select the password and copy it manually.", "error");
+    }
+  }
+});
+
+/* MENU */
+$("menuButton").addEventListener("click", () => {
+  const open = $("menu").classList.toggle("open");
+  $("menuButton").setAttribute("aria-expanded", String(open));
+});
+
+function closeMenu() {
+  $("menu").classList.remove("open");
+  $("menuButton").setAttribute("aria-expanded", "false");
+}
+
+$("menuClose").addEventListener("click", closeMenu);
+$("menuVault").addEventListener("click", () => {
+  closeMenu();
+  openVaultLogin();
+});
+$("openVault").addEventListener("click", openVaultLogin);
+$("menuPattern").addEventListener("click", () => {
+  closeMenu();
+  openPattern();
+});
+
+/* PERSISTENT STORAGE */
 function openDatabase() {
   return new Promise((resolve, reject) => {
-    if (!("indexedDB" in window)) {
-      reject(new Error("This browser does not support local image storage."));
+    if (!window.indexedDB) {
+      reject(new Error("IndexedDB is not supported in this browser."));
       return;
     }
 
     const request = indexedDB.open(DB_NAME, 1);
 
     request.onupgradeneeded = () => {
-      const db = request.result;
-
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        const store = db.createObjectStore(STORE_NAME, {
+      const database = request.result;
+      if (!database.objectStoreNames.contains(STORE_NAME)) {
+        database.createObjectStore(STORE_NAME, {
           keyPath: "id",
           autoIncrement: true
         });
-        store.createIndex("createdAt", "createdAt", { unique: false });
       }
     };
 
     request.onsuccess = () => {
-      database = request.result;
-      database.onversionchange = () => database.close();
-      resolve(database);
+      db = request.result;
+      resolve(db);
     };
 
-    request.onerror = () => reject(
-      request.error || new Error("Could not open picture storage.")
-    );
+    request.onerror = () => reject(request.error);
   });
 }
 
-function storeImage(record) {
+function dbRequest(mode, action, record) {
   return new Promise((resolve, reject) => {
-    const transaction = database.transaction(STORE_NAME, "readwrite");
-    const request = transaction.objectStore(STORE_NAME).add(record);
+    if (!db) {
+      reject(new Error("Picture storage is not ready."));
+      return;
+    }
+
+    const tx = db.transaction(STORE_NAME, mode);
+    const store = tx.objectStore(STORE_NAME);
+    let request;
+
+    if (action === "add") request = store.add(record);
+    else if (action === "getAll") request = store.getAll();
+    else if (action === "delete") request = store.delete(record);
+    else if (action === "clear") request = store.clear();
+
+    if (!request) {
+      reject(new Error("Unknown storage operation."));
+      return;
+    }
 
     request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(
-      request.error || new Error("Could not save the picture.")
-    );
+    request.onerror = () => reject(request.error);
   });
 }
 
-function getAllImages() {
-  return new Promise((resolve, reject) => {
-    const transaction = database.transaction(STORE_NAME, "readonly");
-    const request = transaction.objectStore(STORE_NAME).getAll();
-
-    request.onsuccess = () => resolve(request.result || []);
-    request.onerror = () => reject(
-      request.error || new Error("Could not read saved pictures.")
-    );
-  });
+/* VAULT LOGIN */
+function openVaultLogin() {
+  $("vaultPassword").value = "";
+  showStatus("vaultLoginStatus", "");
+  $("vaultLogin").classList.add("open");
 }
 
-function deleteImage(id) {
-  return new Promise((resolve, reject) => {
-    const transaction = database.transaction(STORE_NAME, "readwrite");
-    const request = transaction.objectStore(STORE_NAME).delete(id);
+$("cancelLogin").addEventListener("click", () => {
+  $("vaultLogin").classList.remove("open");
+});
 
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject(
-      request.error || new Error("Could not delete the picture.")
-    );
-  });
-}
+$("vaultForm").addEventListener("submit", async event => {
+  event.preventDefault();
 
-function deleteAllImages() {
-  return new Promise((resolve, reject) => {
-    const transaction = database.transaction(STORE_NAME, "readwrite");
-    const request = transaction.objectStore(STORE_NAME).clear();
+  const password = $("vaultPassword").value;
 
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject(
-      request.error || new Error("Could not clear the gallery.")
-    );
-  });
-}
-
-function formatDate(timestamp) {
-  try {
-    return new Date(timestamp).toLocaleString();
-  } catch {
-    return "Saved picture";
+  if (!VAULT_PASSWORDS.includes(password)) {
+    showStatus("vaultLoginStatus", "Incorrect password.", "error");
+    $("vaultPassword").select();
+    return;
   }
-}
 
-function makeButton(label, className, onClick) {
+  $("vaultLogin").classList.remove("open");
+  $("vaultOverlay").classList.add("open");
+
+  try {
+    await renderGallery();
+  } catch (error) {
+    showStatus("pictureStatus", "Could not load gallery: " + error.message, "error");
+  }
+});
+
+/* SAVE A PICTURE */
+$("pictureFile").addEventListener("change", () => {
+  const file = $("pictureFile").files[0] || null;
+  selectedFile = null;
+
+  if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    showStatus("pictureStatus", "Please choose an image file.", "error");
+    $("pictureFile").value = "";
+    return;
+  }
+
+  if (file.size > 20 * 1024 * 1024) {
+    showStatus("pictureStatus", "Choose an image smaller than 20 MB.", "error");
+    $("pictureFile").value = "";
+    return;
+  }
+
+  selectedFile = file;
+
+  if (!$("pictureName").value.trim()) {
+    $("pictureName").value = file.name;
+  }
+
+  showStatus("pictureStatus", "Picture selected. Tap Save Picture.", "success");
+});
+
+$("savePicture").addEventListener("click", async () => {
+  if (!selectedFile) {
+    showStatus("pictureStatus", "Choose a picture first.", "error");
+    return;
+  }
+
+  $("savePicture").disabled = true;
+
+  try {
+    await dbRequest("readwrite", "add", {
+      name: $("pictureName").value.trim() || selectedFile.name,
+      blob: selectedFile,
+      createdAt: Date.now(),
+      type: selectedFile.type
+    });
+
+    selectedFile = null;
+    $("pictureFile").value = "";
+    $("pictureName").value = "";
+
+    showStatus("pictureStatus", "Picture saved on this device.", "success");
+    await renderGallery();
+  } catch (error) {
+    showStatus("pictureStatus", "Save failed: " + error.message, "error");
+  } finally {
+    $("savePicture").disabled = false;
+  }
+});
+
+/* GALLERY */
+function makeButton(text, classes, callback) {
   const button = document.createElement("button");
   button.type = "button";
-  button.className = className;
-  button.textContent = label;
-  button.addEventListener("click", onClick);
+  button.className = "btn " + classes;
+  button.textContent = text;
+  button.addEventListener("click", callback);
   return button;
 }
 
 async function renderGallery() {
-  try {
-    const records = await getAllImages();
-    gallery.replaceChildren();
+  const items = await dbRequest("readonly", "getAll");
+  const gallery = $("pictureGallery");
 
-    imageCount.textContent =
-      records.length + (records.length === 1 ? " picture" : " pictures");
+  blobUrls.forEach(url => URL.revokeObjectURL(url));
+  blobUrls = [];
+  gallery.replaceChildren();
 
-    if (records.length === 0) {
-      const empty = document.createElement("div");
-      empty.className = "empty";
-      empty.textContent =
-        "No saved pictures yet. Create a card or choose a picture above.";
-      gallery.appendChild(empty);
-      deleteAllButton.disabled = true;
-      return;
-    }
+  $("storageStatus").textContent =
+    items.length + (items.length === 1 ? " picture saved" : " pictures saved");
 
-    deleteAllButton.disabled = false;
-
-    records.sort((a, b) => b.createdAt - a.createdAt);
-
-    for (const record of records) {
-      const item = document.createElement("article");
-      item.className = "image-card";
-
-      const image = document.createElement("img");
-      image.alt = record.name || "Saved picture";
-      image.loading = "lazy";
-      const url = URL.createObjectURL(record.blob);
-      image.src = url;
-
-      image.addEventListener("click", () => {
-        window.open(url, "_blank", "noopener,noreferrer");
-      });
-
-      const name = document.createElement("div");
-      name.className = "image-name";
-      name.textContent = record.name || "Untitled picture";
-
-      const date = document.createElement("div");
-      date.className = "image-date";
-      date.textContent = formatDate(record.createdAt);
-
-      const remove = makeButton("Delete Picture", "danger", async () => {
-        if (!confirm("Delete this saved picture?")) return;
-
-        remove.disabled = true;
-
-        try {
-          await deleteImage(record.id);
-          URL.revokeObjectURL(url);
-          setStatus(galleryStatus, "Picture deleted.", "success");
-          await renderGallery();
-        } catch (error) {
-          remove.disabled = false;
-          setStatus(galleryStatus, error.message, "error");
-        }
-      });
-
-      item.append(image, name, date, remove);
-      gallery.appendChild(item);
-    }
-
-    setStatus(galleryStatus, "");
-  } catch (error) {
-    setStatus(galleryStatus, error.message, "error");
-  }
-}
-
-async function saveBlob(blob, name) {
-  if (!blob) {
-    setStatus(mainStatus, "Choose or create a picture first.", "error");
+  if (items.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "No pictures saved yet.";
+    gallery.appendChild(empty);
     return;
   }
 
-  saveImageButton.disabled = true;
+  items.sort((a, b) => b.createdAt - a.createdAt);
 
-  try {
-    await storeImage({
-      name: name || "Saved picture",
-      blob,
-      createdAt: Date.now(),
-      type: blob.type || "image/png"
-    });
+  for (const item of items) {
+    const card = document.createElement("article");
+    card.className = "picture";
 
-    setStatus(mainStatus, "Picture saved on this device!", "success");
-    await renderGallery();
-  } catch (error) {
-    setStatus(
-      mainStatus,
-      "Could not save picture. Your browser storage may be full. " +
-      error.message,
-      "error"
-    );
-  } finally {
-    saveImageButton.disabled = false;
-  }
-}
-
-function showPreview(blob, name) {
-  selectedImageBlob = blob;
-  selectedImageName = name || "Saved picture";
-
-  if (temporaryPreviewUrl) {
-    URL.revokeObjectURL(temporaryPreviewUrl);
-  }
-
-  temporaryPreviewUrl = URL.createObjectURL(blob);
-  previewImage.src = temporaryPreviewUrl;
-  previewWrap.style.display = "block";
-  saveImageButton.disabled = false;
-}
-
-menuButton.addEventListener("click", () => {
-  const isOpen = menu.classList.toggle("open");
-  menuButton.setAttribute("aria-expanded", String(isOpen));
-});
-
-closeMenuButton.addEventListener("click", () => {
-  menu.classList.remove("open");
-  menuButton.setAttribute("aria-expanded", "false");
-});
-
-openGalleryButton.addEventListener("click", () => {
-  menu.classList.remove("open");
-  menuButton.setAttribute("aria-expanded", "false");
-  lockStatus.textContent = "";
-  passkeyInput.value = "";
-  lockScreen.classList.add("open");
-  setTimeout(() => passkeyInput.focus(), 50);
-});
-
-cancelUnlockButton.addEventListener("click", () => {
-  lockScreen.classList.remove("open");
-  passkeyInput.value = "";
-  setStatus(lockStatus, "");
-});
-
-unlockForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  const entered = passkeyInput.value;
-  if (!APPROVED_PASSKEYS.includes(entered)) {
-    setStatus(lockStatus, "Incorrect passkey. Try again.", "error");
-    passkeyInput.select();
-    return;
-  }
-
-  galleryUnlocked = true;
-  lockScreen.classList.remove("open");
-  passkeyInput.value = "";
-  setStatus(lockStatus, "");
-
-  // This passkey screen controls access through the menu only.
-  // It does not encrypt the images or hide the HTML source.
-  document.getElementById("galleryPanel").scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
-
-  setStatus(galleryStatus, "Gallery unlocked for this page session.", "success");
-  await renderGallery();
-});
-
-createCardButton.addEventListener("click", () => {
-  const title = cardTitle.value.trim() || "ACCESS CARD";
-  const body = cardText.value.trim();
-
-  if (!body) {
-    setStatus(mainStatus, "Please enter some text for your card.", "error");
-    cardText.focus();
-    return;
-  }
-
-  createCardButton.disabled = true;
-  setStatus(mainStatus, "Creating your card...");
-
-  const canvas = document.createElement("canvas");
-  canvas.width = 1200;
-  canvas.height = 1500;
-
-  const ctx = canvas.getContext("2d");
-  if (!ctx) {
-    createCardButton.disabled = false;
-    setStatus(mainStatus, "Could not create a canvas in this browser.", "error");
-    return;
-  }
-
-  const gradient = ctx.createLinearGradient(0, 0, 1200, 1500);
-  gradient.addColorStop(0, "#12172f");
-  gradient.addColorStop(.52, "#39216e");
-  gradient.addColorStop(1, "#8754e8");
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Decorative soft circles.
-  ctx.globalAlpha = .12;
-  ctx.fillStyle = "#ffffff";
-  ctx.beginPath();
-  ctx.arc(1000, 170, 250, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(80, 1330, 310, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.globalAlpha = 1;
-
-  ctx.strokeStyle = "rgba(255,255,255,.6)";
-  ctx.lineWidth = 3;
-  ctx.strokeRect(45, 45, 1110, 1410);
-
-  ctx.fillStyle = "#d8c5ff";
-  ctx.font = "bold 30px Arial";
-  ctx.fillText("PERSONAL ACCESS CARD", 85, 125);
-
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 66px Arial";
-  wrapText(ctx, title, 85, 260, 1000, 80, 3);
-
-  ctx.strokeStyle = "rgba(255,255,255,.45)";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(85, 390);
-  ctx.lineTo(1115, 390);
-  ctx.stroke();
-
-  ctx.fillStyle = "#f6f2ff";
+    const img = document.createElement("img");
+    img.alt = item
